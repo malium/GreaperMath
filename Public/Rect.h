@@ -9,10 +9,10 @@
 #define MATH_RECT_H 1
 
 #include "MathPrerequisites.h"
-#include "../StringUtils.h"
+#include "../../GreaperCore/Public/StringUtils.h"
 #include "Vector2.h"
 #if PLT_WINDOWS
-#include <Core/Win/Win32Base.h>
+#include "../../GreaperCore/Public/Win/Win32Base.h"
 #endif
 #include "Base/IntersectionResult.h"
 
@@ -375,7 +375,7 @@ namespace std
 	template<class T>
 	struct hash<greaper::math::RectT<T>>
 	{
-		NODISCARD INLINE size_t operator()(const greaper::RectT<T>& r)const noexcept
+		NODISCARD INLINE size_t operator()(const greaper::math::RectT<T>& r)const noexcept
 		{
 			return ComputeHash(r.Left, r.Top, r.Right, r.Bottom);
 		}

@@ -8,7 +8,7 @@
 #ifndef MATH_REFL_VECTOR3_H
 #define MATH_REFL_VECTOR3_H 1
 
-#include "../../Core/Reflection/ComplexType.h"
+#include "../../../GreaperCore/Public/Reflection/ComplexType.h"
 #include "../Vector3.h"
 
 #define CreateVec3Refl(vectype)\

@@ -8,7 +8,7 @@
 #ifndef MATH_PREREQUISITES_H
 #define MATH_PREREQUISITES_H 1
 
-#include <Core/CorePrerequisites.h>
+#include "../../GreaperCore/Public/CorePrerequisites.h"
 
 //#define GLM_FORCE_SSE42
 //#include <External/glm/glm.hpp>

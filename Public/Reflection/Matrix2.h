@@ -8,7 +8,7 @@
 #ifndef MATH_REFL_MATRIX2_H
 #define MATH_REFL_MATRIX2_H 1
 
-#include "../../Core/Reflection/PlainType.h"
+#include "../../../GreaperCore/Public/Reflection/PlainType.h"
 #include "../Matrix2.h"
 
 namespace greaper::refl

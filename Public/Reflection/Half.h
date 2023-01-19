@@ -8,8 +8,8 @@
 #ifndef MATH_REFL_HALF_H
 #define MATH_REFL_HALF_H 1
 
-#include <Core/Reflection/PlainType.h>
-#include <Math/Base/Half.h>
+#include "../../../GreaperCore/Public/Reflection/PlainType.h"
+#include "../Base/Half.h"
 
 namespace greaper::refl
 {

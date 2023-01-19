@@ -15,7 +15,7 @@
 #include "Segment3.h"
 #include "Line2.h"
 #include "Line3.h"
-#include <Core/Result.h>
+#include "../../GreaperCore/Public/Result.h"
 
 namespace greaper::math
 {
