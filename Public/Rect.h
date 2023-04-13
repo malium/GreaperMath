@@ -37,25 +37,20 @@ namespace greaper::math
 		T Bottom = T(0);
 
 		constexpr RectT() = default;
-		constexpr RectT(T left, T top, T width, T height) noexcept;
-		constexpr RectT(const point_type& origin, const point_type& size)noexcept;
+		constexpr RectT(T left, T top, T right, T bottom) noexcept;
 		
 		constexpr T GetWidth()const noexcept;
 		constexpr T GetHeight()const noexcept;
-		constexpr point_type GetOrigin()const noexcept;
+
 		constexpr point_type GetSize()const noexcept;
+
 		constexpr point_type GetLT()const noexcept;
 		constexpr point_type GetRT()const noexcept;
 		constexpr point_type GetLB()const noexcept;
 		constexpr point_type GetRB()const noexcept;
 
 		void Set(const RectT& other)noexcept;
-		void Set(T left, T top, T width, T hegiht) noexcept;
-		void Set(const point_type& position, const point_type& size)noexcept;
-		void SetSize(T width, T height) noexcept;
-		void SetSize(const point_type& size)noexcept;
-		void SetOrigin(T left, T top, bool keepSize = false) noexcept;
-		void SetOrigin(const point_type& pos, bool keepSize = false)noexcept;
+		void Set(T left, T top, T right, T bottom) noexcept;
 
 		constexpr IntersectionResult_t IsInside(T x, T y)const noexcept;
 		constexpr IntersectionResult_t IsInside(const point_type& point)const noexcept;
@@ -70,20 +65,13 @@ namespace greaper::math
 		bool FromString(const String& str) noexcept;
 #if PLT_WINDOWS
 		INLINE constexpr explicit RectT(const RECT& rect)noexcept
-			:Left((T)rect.left)
-			,Top((T)rect.top)
-			,Right((T)rect.right)
-			,Bottom((T)rect.bottom)
 		{
-			
+			Set((T)rect.left, (T)rect.top, (T)rect.right, (T)rect.bottom);
 		}
 		NODISCARD INLINE constexpr operator RECT()const noexcept { return ToRECT(); }
 		INLINE void Set(const RECT& rect) noexcept
 		{
-			Left = (T)rect.left;
-			Top = (T)rect.top;
-			Right = (T)rect.right;
-			Bottom = (T)rect.bottom;
+			Set((T)rect.left, (T)rect.top, (T)rect.right, (T)rect.bottom);
 		}
 		NODISCARD INLINE constexpr RECT ToRECT()const noexcept
 		{
@@ -111,23 +99,9 @@ namespace greaper::math
 	}
 	
 	template<class T>
-	INLINE constexpr RectT<T>::RectT(T left, T top, T width, T height) noexcept
-		:Left(left)
-		,Top(top)
-		,Right(left + width)
-		,Bottom(top - height)
+	INLINE constexpr RectT<T>::RectT(T left, T top, T right, T bottom) noexcept
 	{
-		
-	}
-
-	template<class T>
-	INLINE constexpr RectT<T>::RectT(const point_type& origin, const point_type& size) noexcept
-		:Left(origin.X)
-		,Top(origin.Y)
-		,Right(origin.X + size.X)
-		,Bottom(origin.Y - size.Y)
-	{
-
+		Set(left, top, right, bottom);
 	}
 
 	template<class T>
@@ -140,12 +114,6 @@ namespace greaper::math
 	NODISCARD INLINE constexpr T RectT<T>::GetHeight()const noexcept
 	{
 		return Abs(Bottom - Top);
-	}
-
-	template<class T>
-	NODISCARD INLINE constexpr typename RectT<T>::point_type RectT<T>::GetOrigin() const noexcept
-	{
-		return point_type(Left, Top);
 	}
 
 	template<class T>
@@ -181,64 +149,22 @@ namespace greaper::math
 	template<class T>
 	INLINE void RectT<T>::Set(const RectT& other) noexcept
 	{
-		Left = other.Left;
-		Top = other.Top;
-		Right = other.Right;
-		Bottom = other.Bottom;
+		memcpy(this, &other, sizeof(RectT<T>));
 	}
 
 	template<class T>
-	INLINE void RectT<T>::Set(T left, T top, T width, T hegiht) noexcept
+	INLINE void RectT<T>::Set(T left, T top, T right, T bottom) noexcept
 	{
 		Left = left;
 		Top = top;
-		Right = left + width;
-		Bottom = top - hegiht;
-	}
+		Right = right;
+		Bottom = bottom;
 
-	template<class T>
-	INLINE void RectT<T>::Set(const point_type& position, const point_type& size) noexcept
-	{
-		Set(position.X, position.Y, size.X, size.Y);
-	}
+		if (Left > Right)
+			std::swap(Left, Right);
 
-	template<class T>
-	INLINE void RectT<T>::SetSize(T width, T height) noexcept
-	{
-		width = Abs(width);
-		height = Abs(height);
-		Right = Left + width;
-		Bottom = Top - height;
-	}
-
-	template<class T>
-	INLINE void RectT<T>::SetSize(const point_type& size) noexcept
-	{
-		SetSize(size.X, size.Y);
-	}
-
-	template<class T>
-	INLINE void RectT<T>::SetOrigin(T left, T top, bool keepSize) noexcept
-	{
-		if(!keepSize)
-		{
-			Left = left;
-			Top = top;
-		}
-		else
-		{
-			const T width = GetWidth();
-			const T height = GetHeight();
-			Left = left;
-			Top = top;
-			SetSize(width, height);
-		}
-	}
-
-	template<class T>
-	INLINE void RectT<T>::SetOrigin(const point_type& pos, bool keepSize) noexcept
-	{
-		SetOrigin(pos.X, pos.Y, keepSize);
+		if (Top < Bottom)
+			std::swap(Top, Bottom);
 	}
 
 	template<class T>
@@ -304,7 +230,7 @@ namespace greaper::math
 	template<class T>
 	NODISCARD INLINE constexpr bool RectT<T>::IsEmpty() const noexcept
 	{
-		return GetArea() == T(0);
+		return GetArea() <= T(0);
 	}
 
 	template<class T>
@@ -313,7 +239,7 @@ namespace greaper::math
 		return Left == other.Left
 			&& Top == other.Top
 			&& Right == other.Right
-			&& Top == other.Top;
+			&& Bottom == other.Bottom;
 	}
 	
 	template<class T>
@@ -321,9 +247,9 @@ namespace greaper::math
 	{ 
 		String left = TCategory::ToString(Left);
 		String top = TCategory::ToString(Top);
-		String width = TCategory::ToString(GetWidth());
-		String height = TCategory::ToString(GetHeight());
-		return String{'[' + left + ", " + top + "](" + width + ", " + height + ')'};
+		String right = TCategory::ToString(Right);
+		String bottom = TCategory::ToString(Bottom);
+		return String{'[' + left + ", " + top + "](" + right + ", " + bottom + ')'};
 	}
 
 	template<class T>
@@ -331,21 +257,21 @@ namespace greaper::math
 	{
 		const auto ltBegin = str.find_first_of('[');
 		const auto ltEnd = str.find_first_of(']');
-		const auto whBegin = str.find_first_of('(');
-		const auto whEnd = str.find_last_of(')');
+		const auto rbBegin = str.find_first_of('(');
+		const auto rbEnd = str.find_last_of(')');
 
 		if(ltBegin == String::npos || ltEnd == String::npos
-			|| whBegin == String::npos || whEnd == String::npos)
+			|| rbBegin == String::npos || whEnd == String::npos)
 		{
 			return false; // Tokens not found
 		}
 
 		StringVec ltSplit = StringUtils::Tokenize(str.substr(ltBegin+1, ltEnd - ltBegin), ',');
 		for(auto& s : ltSplit) StringUtils::TrimSelf(s);
-		StringVec whSplit = StringUtils::Tokenize(str.substr(whBegin + 1, whEnd - whBegin), ',');
-		for(auto& s : whSplit) StringUtils::TrimSelf(s);
+		StringVec rbSplit = StringUtils::Tokenize(str.substr(rbBegin + 1, rbEnd - rbBegin), ',');
+		for(auto& s : rbSplit) StringUtils::TrimSelf(s);
 
-		if(ltSplit.size() != 2 || whSplit.size() != 2)
+		if(ltSplit.size() != 2 || rbSplit.size() != 2)
 		{
 			return false; // Wrong split size
 		}
@@ -355,19 +281,13 @@ namespace greaper::math
 		if(TCategory::FromString(Top, ltSplit[1]).HasFailed())
 			return false;
 
-		T width = T(-1), height = T(-1);
-		if(TCategory::FromString(width, whSplit[0]).HasFailed())
+		if(TCategory::FromString(Right, rbSplit[0]).HasFailed())
 			return false;
-		if(TCategory::FromString(height, whSplit[1]).HasFailed())
+		if(TCategory::FromString(Bottom, rbSplit[1]).HasFailed())
 			return false;
 
-		if(width == T(-1) || height == T(-1))
-		{
-			return false; // Invalid conversion or wrong size
-		}
-
-		SetSize(width, height);
-	} 
+		return true;
+	}
 }
 
 namespace std
