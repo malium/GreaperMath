@@ -261,7 +261,7 @@ namespace greaper::math
 		const auto rbEnd = str.find_last_of(')');
 
 		if(ltBegin == String::npos || ltEnd == String::npos
-			|| rbBegin == String::npos || whEnd == String::npos)
+			|| rbBegin == String::npos || rbEnd == String::npos)
 		{
 			return false; // Tokens not found
 		}
