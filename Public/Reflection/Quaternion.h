@@ -15,18 +15,18 @@
 namespace greaper::refl{\
 	template<>\
 	const Vector<SPtr<IField>> ComplexType<quatType>::Fields = Vector<SPtr<IField>>({\
-			SPtr<IField>(Construct<TField<quatType::value_type>>("W"sv, \
-			[](const void* obj) -> const void* { return &(((const quatType*)obj)->W); },\
-			[](void* obj, const void* value) { ((quatType*)obj)->W = *((const quatType::value_type*)value); })),\
-			SPtr<IField>(Construct<TField<quatType::value_type>>("X"sv, \
-			[](const void* obj) -> const void* { return &(((const quatType*)obj)->X); },\
-			[](void* obj, const void* value) { ((quatType*)obj)->X = *((const quatType::value_type*)value); })),\
-			SPtr<IField>(Construct<TField<quatType::value_type>>("Y"sv, \
-			[](const void* obj) -> const void* { return &(((const quatType*)obj)->Y); },\
-			[](void* obj, const void* value) { ((quatType*)obj)->Y = *((const quatType::value_type*)value); })),\
-			SPtr<IField>(Construct<TField<quatType::value_type>>("Z"sv, \
-			[](const void* obj) -> const void* { return &(((const quatType*)obj)->Z); },\
-			[](void* obj, const void* value) { ((quatType*)obj)->Z = *((const quatType::value_type*)value); })),\
+			(SPtr<IField>)ConstructShared<TField<quatType::value_type>>("W"sv, \
+			(std::function<const void* (const void*)>)[](const void* obj) -> const void* { return &(((const quatType*)obj)->W); },\
+			(std::function<void(void*, const void*)>)[](void* obj, const void* value) { ((quatType*)obj)->W = *((const quatType::value_type*)value); }),\
+			(SPtr<IField>)ConstructShared<TField<quatType::value_type>>("X"sv, \
+			(std::function<const void* (const void*)>)[](const void* obj) -> const void* { return &(((const quatType*)obj)->X); },\
+			(std::function<void(void*, const void*)>)[](void* obj, const void* value) { ((quatType*)obj)->X = *((const quatType::value_type*)value); }),\
+			(SPtr<IField>)ConstructShared<TField<quatType::value_type>>("Y"sv, \
+			(std::function<const void* (const void*)>)[](const void* obj) -> const void* { return &(((const quatType*)obj)->Y); },\
+			(std::function<void(void*, const void*)>)[](void* obj, const void* value) { ((quatType*)obj)->Y = *((const quatType::value_type*)value); }),\
+			(SPtr<IField>)ConstructShared<TField<quatType::value_type>>("Z"sv, \
+			(std::function<const void* (const void*)>)[](const void* obj) -> const void* { return &(((const quatType*)obj)->Z); },\
+			(std::function<void(void*, const void*)>)[](void* obj, const void* value) { ((quatType*)obj)->Z = *((const quatType::value_type*)value); }),\
 		});\
 }
 

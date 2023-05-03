@@ -15,18 +15,18 @@
 namespace greaper::refl{\
 	template<>\
 	const Vector<SPtr<IField>> ComplexType<vectype>::Fields = Vector<SPtr<IField>>({\
-			SPtr<IField>(Construct<TField<vectype::value_type>>("X"sv, \
-			[](const void* obj) -> const void* { return &(((const vectype*)obj)->X); },\
-			[](void* obj, const void* value) { ((vectype*)obj)->X = *((const vectype::value_type*)value); })),\
-			SPtr<IField>(Construct<TField<vectype::value_type>>("Y"sv, \
-			[](const void* obj) -> const void* { return &(((const vectype*)obj)->Y); },\
-			[](void* obj, const void* value) { ((vectype*)obj)->Y = *((const vectype::value_type*)value); })),\
-			SPtr<IField>(Construct<TField<vectype::value_type>>("Z"sv, \
-			[](const void* obj) -> const void* { return &(((const vectype*)obj)->Z); },\
-			[](void* obj, const void* value) { ((vectype*)obj)->Z = *((const vectype::value_type*)value); })),\
-			SPtr<IField>(Construct<TField<vectype::value_type>>("W"sv, \
-			[](const void* obj) -> const void* { return &(((const vectype*)obj)->W); },\
-			[](void* obj, const void* value) { ((vectype*)obj)->W = *((const vectype::value_type*)value); })),\
+			(SPtr<IField>)ConstructShared<TField<vectype::value_type>>("X"sv, \
+			(std::function<const void* (const void*)>)[](const void* obj) -> const void* { return &(((const vectype*)obj)->X); },\
+			(std::function<void(void*, const void*)>)[](void* obj, const void* value) { ((vectype*)obj)->X = *((const vectype::value_type*)value); }),\
+			(SPtr<IField>)ConstructShared<TField<vectype::value_type>>("Y"sv, \
+			(std::function<const void* (const void*)>)[](const void* obj) -> const void* { return &(((const vectype*)obj)->Y); },\
+			(std::function<void(void*, const void*)>)[](void* obj, const void* value) { ((vectype*)obj)->Y = *((const vectype::value_type*)value); }),\
+			(SPtr<IField>)ConstructShared<TField<vectype::value_type>>("Z"sv, \
+			(std::function<const void* (const void*)>)[](const void* obj) -> const void* { return &(((const vectype*)obj)->Z); },\
+			(std::function<void(void*, const void*)>)[](void* obj, const void* value) { ((vectype*)obj)->Z = *((const vectype::value_type*)value); }),\
+			(SPtr<IField>)ConstructShared<TField<vectype::value_type>>("W"sv, \
+			(std::function<const void* (const void*)>)[](const void* obj) -> const void* { return &(((const vectype*)obj)->W); },\
+			(std::function<void(void*, const void*)>)[](void* obj, const void* value) { ((vectype*)obj)->W = *((const vectype::value_type*)value); }),\
 		});\
 }
 

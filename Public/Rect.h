@@ -9,7 +9,6 @@
 #define MATH_RECT_H 1
 
 #include "MathPrerequisites.h"
-#include "../../GreaperCore/Public/StringUtils.h"
 #include "Vector2.h"
 #if PLT_WINDOWS
 #include "../../GreaperCore/Public/Win/Win32Base.h"

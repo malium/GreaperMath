@@ -15,18 +15,18 @@
 namespace greaper::refl{\
 	template<>\
 	const Vector<SPtr<IField>> ComplexType<recttype>::Fields = Vector<SPtr<IField>>({\
-			SPtr<IField>(Construct<TField<recttype::value_type>>("Left"sv, \
-			[](const void* obj) -> const void* { return &(((const recttype*)obj)->Left); },\
-			[](void* obj, const void* value) { ((recttype*)obj)->Left = *((const recttype::value_type*)value); })),\
-			SPtr<IField>(Construct<TField<recttype::value_type>>("Top"sv, \
-			[](const void* obj) -> const void* { return &(((const recttype*)obj)->Top); },\
-			[](void* obj, const void* value) { ((recttype*)obj)->Top = *((const recttype::value_type*)value); })),\
-			SPtr<IField>(Construct<TField<recttype::value_type>>("Right"sv, \
-			[](const void* obj) -> const void* { return &(((const recttype*)obj)->Right); },\
-			[](void* obj, const void* value) { ((recttype*)obj)->Right = *((const recttype::value_type*)value); })),\
-			SPtr<IField>(Construct<TField<recttype::value_type>>("Bottom"sv, \
-			[](const void* obj) -> const void* { return &(((const recttype*)obj)->Bottom); },\
-			[](void* obj, const void* value) { ((recttype*)obj)->Bottom = *((const recttype::value_type*)value); })),\
+			(SPtr<IField>)ConstructShared<TField<recttype::value_type>>("Left"sv, \
+			(std::function<const void* (const void*)>)[](const void* obj) -> const void* { return &(((const recttype*)obj)->Left); },\
+			(std::function<void(void*, const void*)>)[](void* obj, const void* value) { ((recttype*)obj)->Left = *((const recttype::value_type*)value); }),\
+			(SPtr<IField>)ConstructShared<TField<recttype::value_type>>("Top"sv, \
+			(std::function<const void* (const void*)>)[](const void* obj) -> const void* { return &(((const recttype*)obj)->Top); },\
+			(std::function<void(void*, const void*)>)[](void* obj, const void* value) { ((recttype*)obj)->Top = *((const recttype::value_type*)value); }),\
+			(SPtr<IField>)ConstructShared<TField<recttype::value_type>>("Right"sv, \
+			(std::function<const void* (const void*)>)[](const void* obj) -> const void* { return &(((const recttype*)obj)->Right); },\
+			(std::function<void(void*, const void*)>)[](void* obj, const void* value) { ((recttype*)obj)->Right = *((const recttype::value_type*)value); }),\
+			(SPtr<IField>)ConstructShared<TField<recttype::value_type>>("Bottom"sv, \
+			(std::function<const void* (const void*)>)[](const void* obj) -> const void* { return &(((const recttype*)obj)->Bottom); },\
+			(std::function<void(void*, const void*)>)[](void* obj, const void* value) { ((recttype*)obj)->Bottom = *((const recttype::value_type*)value); }),\
 		});\
 }
 
