@@ -18,18 +18,6 @@ namespace greaper::math
 	{
 		static_assert(std::is_integral_v<T> && std::is_unsigned_v<T>, "Vector3Unsigned can only work with unsigned intXX types");
 
-		template<class U> struct Print {  };
-		template<> struct Print<uint8> { static constexpr auto fmt = "%" PRIu8 ", %" PRIu8 ", %" PRIu8; };
-		template<> struct Print<uint16> { static constexpr auto fmt = "%" PRIu16 ", %" PRIu16 ", %" PRIu16; };
-		template<> struct Print<uint32> { static constexpr auto fmt = "%" PRIu32 ", %" PRIu32 ", %" PRIu32; };
-		template<> struct Print<uint64> { static constexpr auto fmt = "%" PRIu64 ", %" PRIu64 ", %" PRIu64; };
-
-		template<class U> struct Scan {  };
-		template<> struct Scan<uint8> { static constexpr auto fmt = "%" SCNu8 ", %" SCNu8 ", %" SCNu8; };
-		template<> struct Scan<uint16> { static constexpr auto fmt = "%" SCNu16 ", %" SCNu16 ", %" SCNu16; };
-		template<> struct Scan<uint32> { static constexpr auto fmt = "%" SCNu32 ", %" SCNu32 ", %" SCNu32; };
-		template<> struct Scan<uint64> { static constexpr auto fmt = "%" SCNu64 ", %" SCNu64 ", %" SCNu64; };
-
 	public:
 		static constexpr sizet ComponentCount = 3;
 		using value_type = T;
@@ -114,11 +102,11 @@ namespace greaper::math
 		}
 		NODISCARD INLINE String ToString()const noexcept
 		{
-			return Format(Print<T>::fmt, X, Y, Z);
+			return Format(Impl::Vec3Conv<T>::print, X, Y, Z);
 		}
 		INLINE void FromString(StringView str)noexcept
 		{
-			sscanf(str.data(), Scan<T>::fmt, &X, &Y, &Z);
+			sscanf(str.data(), Impl::Vec3Conv<T>::scan, &X, &Y, &Z);
 		}
 
 		static const Vector3Unsigned ZERO;

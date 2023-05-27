@@ -9,7 +9,7 @@
 #define MATH_VECTOR2B_H 1
 
 #include "../MathPrerequisites.h"
-#include "../../GreaperCore/Public/StringUtils.h"
+#include "../../../GreaperCore/Public/StringUtils.h"
 #include <array>
 
 namespace greaper::math
@@ -91,8 +91,8 @@ namespace greaper::math
 			for (auto& r : split)
 				StringUtils::ToLowerSelf(StringUtils::TrimSelf(r));
 
-			X = split[0] == "true"sv ? true : false;
-			Y = split[1] == "true"sv ? true : false;
+			X = split[0] == "true"sv;
+			Y = split[1] == "true"sv;
 
 			return true;
 		}

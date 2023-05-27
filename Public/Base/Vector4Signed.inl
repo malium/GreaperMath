@@ -18,18 +18,6 @@ namespace greaper::math
 	{
 		static_assert(std::is_integral_v<T> && !std::is_unsigned_v<T>, "Vector4Signed can only work with float, double or long double types");
 
-		template<class U> struct Print {  };
-		template<> struct Print<int8> { static constexpr auto fmt = "%" PRIi8 ", %" PRIi8 ", %" PRIi8 ", %" PRIi8; };
-		template<> struct Print<int16> { static constexpr auto fmt = "%" PRIi16 ", %" PRIi16 ", %" PRIi16 ", %" PRIi16; };
-		template<> struct Print<int32> { static constexpr auto fmt = "%" PRIi32 ", %" PRIi32 ", %" PRIi32 ", %" PRIi32; };
-		template<> struct Print<int64> { static constexpr auto fmt = "%" PRIi64 ", %" PRIi64 ", %" PRIi64 ", %" PRIi64; };
-
-		template<class U> struct Scan {  };
-		template<> struct Scan<int8> { static constexpr auto fmt = "%" SCNi8 ", %" SCNi8 ", %" SCNi8 ", %" SCNi8; };
-		template<> struct Scan<int16> { static constexpr auto fmt = "%" SCNi16 ", %" SCNi16 ", %" SCNi16 ", %" SCNi16; };
-		template<> struct Scan<int32> { static constexpr auto fmt = "%" SCNi32 ", %" SCNi32 ", %" SCNi32 ", %" SCNi32; };
-		template<> struct Scan<int64> { static constexpr auto fmt = "%" SCNi64 ", %" SCNi64 ", %" SCNi64 ", %" SCNi64; };
-
 	public:
 		static constexpr sizet ComponentCount = 4;
 		using value_type = T;
@@ -139,11 +127,11 @@ namespace greaper::math
 		}
 		NODISCARD INLINE String ToString()const noexcept
 		{
-			return Format(Print<T>::fmt, X, Y, Z, W);
+			return Format(Impl::Vec4Conv<T>::print, X, Y, Z, W);
 		}
 		INLINE void FromString(StringView str)noexcept
 		{
-			sscanf(str.data(), Scan<T>::fmt, &X, &Y, &Z, &W);
+			sscanf(str.data(), Impl::Vec4Conv<T>::scan, &X, &Y, &Z, &W);
 		}
 
 		static const Vector4Signed ZERO;

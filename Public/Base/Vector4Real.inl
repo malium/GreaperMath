@@ -18,16 +18,6 @@ namespace greaper::math
 	{
 		static_assert(std::is_floating_point_v<T>, "Vector4Real can only work with float, double or long double types");
 
-		template<class U> struct Print {  };
-		template<> struct Print<float> { static constexpr auto fmt = "%f, %f, %f, %f"; };
-		template<> struct Print<double> { static constexpr auto fmt = "%lf, %lf, %lf, %lf"; };
-		template<> struct Print<long double> { static constexpr auto fmt = "%Lf, %Lf, %Lf, %Lf"; };
-
-		template<class U> struct Scan {  };
-		template<> struct Scan<float> { static constexpr auto fmt = "%f, %f, %f, %f"; };
-		template<> struct Scan<double> { static constexpr auto fmt = "%lf, %lf, %lf, %lf"; };
-		template<> struct Scan<long double> { static constexpr auto fmt = "%Lf, %Lf, %Lf, %Lf"; };
-
 	public:
 		static constexpr sizet ComponentCount = 4;
 		using value_type = T;
@@ -191,11 +181,11 @@ namespace greaper::math
 		}
 		NODISCARD INLINE String ToString()const noexcept
 		{
-			return Format(Print<T>::fmt, X, Y, Z, W);
+			return Format(Impl::Vec4Conv<T>::print, X, Y, Z, W);
 		}
 		INLINE void FromString(StringView str)noexcept
 		{
-			sscanf(str.data(), Scan<T>::fmt, &X, &Y, &Z, &W);
+			sscanf(str.data(), Impl::Vec4Conv<T>::scan, &X, &Y, &Z, &W);
 		}
 
 		static const Vector4Real ZERO;

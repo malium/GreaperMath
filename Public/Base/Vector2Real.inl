@@ -9,6 +9,7 @@
 #define MATH_VECTOR2REAL_H 1
 
 #include "../MathPrerequisites.h"
+#include "StringConversion.inl"
 #include "../../../GreaperCore/Public/StringUtils.h"
 #include <array>
 
@@ -18,16 +19,6 @@ namespace greaper::math
 	class Vector2Real
 	{
 		static_assert(std::is_floating_point_v<T>, "Vector2Real can only work with float, double or long double types");
-
-		template<class U> struct Print {  };
-		template<> struct Print<float> { static constexpr auto fmt = "%f, %f"; };
-		template<> struct Print<double> { static constexpr auto fmt = "%lf, %lf"; };
-		template<> struct Print<long double> { static constexpr auto fmt = "%Lf, %Lf"; };
-
-		template<class U> struct Scan {  };
-		template<> struct Scan<float> { static constexpr auto fmt = "%f, %f"; };
-		template<> struct Scan<double> { static constexpr auto fmt = "%lf, %lf"; };
-		template<> struct Scan<long double> { static constexpr auto fmt = "%Lf, %Lf"; };
 
 	public:
 		static constexpr sizet ComponentCount = 2;
@@ -180,11 +171,11 @@ namespace greaper::math
 		}
 		NODISCARD INLINE String ToString()const noexcept
 		{
-			return Format(Print<T>::fmt, X, Y);
+			return Format(Impl::Vec2Conv<T>::print, X, Y);
 		}
 		INLINE void FromString(StringView str)noexcept
 		{
-			sscanf(str.data(), Scan<T>::fmt, &X, &Y);
+			sscanf(str.data(), Impl::Vec2Conv<T>::scan, &X, &Y);
 		}
 
 		static const Vector2Real ZERO;

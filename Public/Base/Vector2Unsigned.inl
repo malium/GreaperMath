@@ -9,7 +9,8 @@
 #define MATH_VECTOR2UNSIGNED_H 1
 
 #include "../MathPrerequisites.h"
-#include "../../GreaperCore/Public/StringUtils.h"
+#include "StringConversion.inl"
+#include "../../../GreaperCore/Public/StringUtils.h"
 #include <array>
 
 namespace greaper::math
@@ -18,18 +19,6 @@ namespace greaper::math
 	class Vector2Unsigned
 	{
 		static_assert(std::is_integral_v<T>&& std::is_unsigned_v<T>, "Vector2Unsigned can only work with unsigned intXX types");
-
-		template<class U> struct Print {  };
-		template<> struct Print<uint8> { static constexpr auto fmt = "%" PRIu8 ", %" PRIu8; };
-		template<> struct Print<uint16> { static constexpr auto fmt = "%" PRIu16 ", %" PRIu16; };
-		template<> struct Print<uint32> { static constexpr auto fmt = "%" PRIu32 ", %" PRIu32; };
-		template<> struct Print<uint64> { static constexpr auto fmt = "%" PRIu64 ", %" PRIu64; };
-
-		template<class U> struct Scan {  };
-		template<> struct Scan<uint8> { static constexpr auto fmt = "%" SCNu8 ", %" SCNu8; };
-		template<> struct Scan<uint16> { static constexpr auto fmt = "%" SCNu16 ", %" SCNu16; };
-		template<> struct Scan<uint32> { static constexpr auto fmt = "%" SCNu32 ", %" SCNu32; };
-		template<> struct Scan<uint64> { static constexpr auto fmt = "%" SCNu64 ", %" SCNu64; };
 
 	public:
 		static constexpr sizet ComponentCount = 2;
@@ -107,11 +96,11 @@ namespace greaper::math
 		}
 		NODISCARD INLINE String ToString()const noexcept
 		{
-			return Format(Print<T>::fmt, X, Y);
+			return Format(Impl::Vec2Conv<T>::print, X, Y);
 		}
 		INLINE void FromString(StringView str)noexcept
 		{
-			sscanf(str.data(), Scan<T>::fmt, &X, &Y);
+			sscanf(str.data(), Impl::Vec2Conv<T>::scan, &X, &Y);
 		}
 
 		static const Vector2Unsigned ZERO;
@@ -140,7 +129,6 @@ namespace greaper::math
 template<> NODISCARD INLINE constexpr greaper::math::Vector2Unsigned<type> Clamp<greaper::math::Vector2Unsigned<type>>(const greaper::math::Vector2Unsigned<type> a, const greaper::math::Vector2Unsigned<type> min, const greaper::math::Vector2Unsigned<type> max)noexcept{\
 	return a.GetClamped(min, max);\
 }
-
 INSTANTIATE_VEC2U_UTILS(uint8);
 INSTANTIATE_VEC2U_UTILS(uint16);
 INSTANTIATE_VEC2U_UTILS(uint32);

@@ -10,28 +10,8 @@
 
 #include "../../GreaperCore/Public/CorePrerequisites.h"
 
-//#define GLM_FORCE_SSE42
-//#include <External/glm/glm.hpp>
-//#include <External/glm/ext/quaternion_common.hpp>
-//#include <External/glm/ext/quaternion_float.hpp>
-//#include <External/glm/ext/quaternion_double.hpp>
-//#include <External/glm/ext/quaternion_exponential.hpp>
-//#include <External/glm/ext/quaternion_geometric.hpp>
-//#include <External/glm/ext/quaternion_relational.hpp>
-//#include <External/glm/ext/quaternion_transform.hpp>
-//#include <External/glm/ext/quaternion_trigonometric.hpp>
-//#include <External/glm/gtc/quaternion.hpp>
-//#include <External/glm/gtx/quaternion.hpp>
-//#include <External/glm/gtc/matrix_transform.hpp>
-
 namespace greaper::math
 {
-//#ifndef MATH_TOLERANCE_VAL
-//	inline constexpr float MATH_TOLERANCE = 0.001f;
-//#else
-//	inline constexpr float MATH_TOLERANCE = MATH_TOLERANCE_VAL;
-//#endif
-
 	template<class T> class Vector2Real;
 	using Vector2f = Vector2Real<float>;
 	using Vector2d = Vector2Real<double>;

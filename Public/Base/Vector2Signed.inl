@@ -9,6 +9,7 @@
 #define MATH_VECTOR2SIGNED_H 1
 
 #include "../MathPrerequisites.h"
+#include "StringConversion.inl"
 #include "../../../GreaperCore/Public/StringUtils.h"
 #include <array>
 
@@ -18,18 +19,6 @@ namespace greaper::math
 	class Vector2Signed
 	{
 		static_assert(std::is_integral_v<T> && !std::is_unsigned_v<T>, "Vector2Signed can only work with signed intXX types");
-
-		template<class U> struct Print {  };
-		template<> struct Print<int8> { static constexpr auto fmt = "%" PRIi8 ", %" PRIi8; };
-		template<> struct Print<int16> { static constexpr auto fmt = "%" PRIi16 ", %" PRIi16; };
-		template<> struct Print<int32> { static constexpr auto fmt = "%" PRIi32 ", %" PRIi32; };
-		template<> struct Print<int64> { static constexpr auto fmt = "%" PRIi64 ", %" PRIi64; };
-
-		template<class U> struct Scan {  };
-		template<> struct Scan<int8> { static constexpr auto fmt = "%" SCNi8 ", %" SCNi8; };
-		template<> struct Scan<int16> { static constexpr auto fmt = "%" SCNi16 ", %" SCNi16; };
-		template<> struct Scan<int32> { static constexpr auto fmt = "%" SCNi32 ", %" SCNi32; };
-		template<> struct Scan<int64> { static constexpr auto fmt = "%" SCNi64 ", %" SCNi64; };
 
 	public:
 		static constexpr sizet ComponentCount = 2;
@@ -124,11 +113,11 @@ namespace greaper::math
 		}
 		NODISCARD INLINE String ToString()const noexcept
 		{
-			return Format(Print<T>::fmt, X, Y);
+			return Format(Impl::Vec2Conv<T>::print, X, Y);
 		}
 		INLINE void FromString(StringView str)noexcept
 		{
-			sscanf(str.data(), Scan<T>::fmt, &X, &Y);
+			sscanf(str.data(), Impl::Vec2Conv<T>::scan, &X, &Y);
 		}
 
 		static const Vector2Signed ZERO;

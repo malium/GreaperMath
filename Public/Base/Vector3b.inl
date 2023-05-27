@@ -97,9 +97,9 @@ namespace greaper::math
 			for (auto& r : split)
 				StringUtils::ToLowerSelf(StringUtils::TrimSelf(r));
 
-			X = split[0] == "true"sv ? true : false;
-			Y = split[1] == "true"sv ? true : false;
-			Z = split[2] == "true"sv ? true : false;
+			X = split[0] == "true"sv;
+			Y = split[1] == "true"sv;
+			Z = split[2] == "true"sv;
 
 			return true;
 		}
