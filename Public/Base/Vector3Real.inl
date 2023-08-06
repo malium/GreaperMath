@@ -141,19 +141,19 @@ namespace greaper::math
 		}
 		NODISCARD INLINE constexpr T GetMaxComponent()const noexcept
 		{
-			return ::Max3(X, Y, Z);
+			return ::Max(X, Y, Z);
 		}
 		NODISCARD INLINE constexpr T GetAbsMaxComponent()const noexcept
 		{
-			return ::Max3(::Abs(X), ::Abs(Y), ::Abs(Z));
+			return ::Max(::Abs(X), ::Abs(Y), ::Abs(Z));
 		}
 		NODISCARD INLINE constexpr T GetMinComponent()const noexcept
 		{
-			return ::Min3(X, Y, Z);
+			return ::Min(X, Y, Z);
 		}
 		NODISCARD INLINE constexpr T GetAbsMinComponent()const noexcept
 		{
-			return ::Min3(::Abs(X), ::Abs(Y), ::Abs(Z));
+			return ::Min(::Abs(X), ::Abs(Y), ::Abs(Z));
 		}
 		NODISCARD INLINE constexpr Vector3Real GetClampledAxes(T minAxeVal, T maxAxeVal)const noexcept
 		{
@@ -237,7 +237,7 @@ template<> NODISCARD INLINE constexpr greaper::math::Vector3Real<type> Sign<grea
 
 INSTANTIATE_VEC3R_UTILS(float);
 INSTANTIATE_VEC3R_UTILS(double);
-INSTANTIATE_VEC3R_UTILS(long double);
+//INSTANTIATE_VEC3R_UTILS(long double);
 
 #undef INSTANTIATE_VEC3R_UTILS
 

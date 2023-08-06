@@ -78,11 +78,11 @@ namespace greaper::math
 		}
 		NODISCARD INLINE constexpr T GetMaxComponent()const noexcept
 		{
-			return ::Max3(X, Y, Z);
+			return ::Max(X, Y, Z);
 		}
 		NODISCARD INLINE constexpr T GetMinComponent()const noexcept
 		{
-			return ::Min3(X, Y, Z);
+			return ::Min(X, Y, Z);
 		}
 		NODISCARD INLINE constexpr Vector3Unsigned GetClampledAxes(T minAxeVal, T maxAxeVal)const noexcept
 		{

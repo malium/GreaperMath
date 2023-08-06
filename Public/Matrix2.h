@@ -10,6 +10,7 @@
 
 #include "Vector2.h"
 #include "Base/VecRef.h"
+#include "Base/StringConversion.inl"
 
 namespace greaper::math
 {
@@ -18,16 +19,6 @@ namespace greaper::math
 	{
 		static_assert(std::is_floating_point_v<T>, "Matrix2Real can only work with float, double or long double types");
 		
-		template<class U> struct Print {  };
-		template<> struct Print<float> { static constexpr auto fmt = "%f, %f, %f, %f"; };
-		template<> struct Print<double> { static constexpr auto fmt = "%lf, %lf, %lf, %lf"; };
-		template<> struct Print<long double> { static constexpr auto fmt = "%Lf, %Lf, %Lf, %Lf"; };
-
-		template<class U> struct Scan {  };
-		template<> struct Scan<float> { static constexpr auto fmt = "%f, %f, %f, %f"; };
-		template<> struct Scan<double> { static constexpr auto fmt = "%lf, %lf, %lf, %lf"; };
-		template<> struct Scan<long double> { static constexpr auto fmt = "%Lf, %Lf, %Lf, %Lf"; };
-
 	public:
 		using value_type = T;
 
@@ -171,11 +162,11 @@ namespace greaper::math
 		}
 		NODISCARD INLINE String ToString()const noexcept
 		{
-			return Format(Print<T>::fmt, R0.X, R0.Y, R1.X, R1.Y);
+			return Format(Impl::Mat2Conv<T>::print, R0.X, R0.Y, R1.X, R1.Y);
 		}
 		INLINE void FromString(StringView str)noexcept
 		{
-			sscanf(str.data(), Scan<T>::fmt, &R0.X, &R0.Y, &R1.X, &R1.Y);
+			sscanf(str.data(), Impl::Mat2Conv<T>::scan, &R0.X, &R0.Y, &R1.X, &R1.Y);
 		}
 
 		static const Matrix2Real IDENTITY;

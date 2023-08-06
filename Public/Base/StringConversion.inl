@@ -24,7 +24,7 @@ namespace greaper::math::Impl
 	template<> struct Vec2Conv<uint64> { static constexpr auto print = "%" PRIu64 ", %" PRIu64; static constexpr auto scan = "%" SCNu64 ", %" SCNu64; };
 	template<> struct Vec2Conv<float> { static constexpr auto print = "%f, %f"; static constexpr auto scan = "%f, %f"; };
 	template<> struct Vec2Conv<double> { static constexpr auto print = "%lf, %lf"; static constexpr auto scan = "%lf, %lf"; };
-	template<> struct Vec2Conv<long double> { static constexpr auto print = "%Lf, %Lf"; static constexpr auto scan = "%Lf, %Lf"; };
+	//template<> struct Vec2Conv<long double> { static constexpr auto print = "%Lf, %Lf"; static constexpr auto scan = "%Lf, %Lf"; };
 	
 	template<class T>
 	struct Vec3Conv { };
@@ -38,7 +38,7 @@ namespace greaper::math::Impl
 	template<> struct Vec3Conv<uint64> { static constexpr auto print = "%" PRIu64 ", %" PRIu64 ", %" PRIu64; static constexpr auto scan = "%" SCNu64 ", %" SCNu64 ", %" SCNu64; };
 	template<> struct Vec3Conv<float> { static constexpr auto print = "%f, %f, %f"; static constexpr auto scan = "%f, %f, %f"; };
 	template<> struct Vec3Conv<double> { static constexpr auto print = "%lf, %lf, %lf"; static constexpr auto scan = "%lf, %lf, %lf"; };
-	template<> struct Vec3Conv<long double> { static constexpr auto print = "%Lf, %Lf, %Lf"; static constexpr auto scan = "%Lf, %Lf, %Lf"; };
+	//template<> struct Vec3Conv<long double> { static constexpr auto print = "%Lf, %Lf, %Lf"; static constexpr auto scan = "%Lf, %Lf, %Lf"; };
 	
 	template<class T>
 	struct Vec4Conv { };
@@ -52,7 +52,22 @@ namespace greaper::math::Impl
 	template<> struct Vec4Conv<uint64> { static constexpr auto print = "%" PRIu64 ", %" PRIu64 ", %" PRIu64 ", %" PRIu64; static constexpr auto scan = "%" SCNu64 ", %" SCNu64 ", %" SCNu64 ", %" SCNu64; };
 	template<> struct Vec4Conv<float> { static constexpr auto print = "%f, %f, %f, %f"; static constexpr auto scan = "%f, %f, %f, %f"; };
 	template<> struct Vec4Conv<double> { static constexpr auto print = "%lf, %lf, %lf, %lf"; static constexpr auto scan = "%lf, %lf, %lf, %lf"; };
-	template<> struct Vec4Conv<long double> { static constexpr auto print = "%Lf, %Lf, %Lf, %Lf"; static constexpr auto scan = "%Lf, %Lf, %Lf, %Lf"; };
+	//template<> struct Vec4Conv<long double> { static constexpr auto print = "%Lf, %Lf, %Lf, %Lf"; static constexpr auto scan = "%Lf, %Lf, %Lf, %Lf"; };
+
+	template<class T>
+	struct Mat2Conv { };
+	template<> struct Mat2Conv<float> { static constexpr auto print = "%f, %f, %f, %f"; static constexpr auto scan = "%f, %f, %f, %f"; };
+	template<> struct Mat2Conv<double> { static constexpr auto print = "%lf, %lf, %lf, %lf"; static constexpr auto scan = "%lf, %lf, %lf, %lf"; };
+
+	template<class T>
+	struct Mat3Conv { };
+	template<> struct Mat3Conv<float> { static constexpr auto print = "%f, %f, %f, %f, %f, %f, %f, %f, %f"; static constexpr auto scan = "%f, %f, %f, %f, %f, %f, %f, %f, %f"; };
+	template<> struct Mat3Conv<double> { static constexpr auto print = "%lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf"; static constexpr auto scan = "%lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf"; };
+
+	template<class T>
+	struct Mat4Conv { };
+	template<> struct Mat4Conv<float> { static constexpr auto print = "%f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f"; static constexpr auto scan = "%f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f"; };
+	template<> struct Mat4Conv<double> { static constexpr auto print = "%lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf"; static constexpr auto scan = "%lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf"; };
 }
 
 #endif /* MATH_STRINGCONVERSION_H */

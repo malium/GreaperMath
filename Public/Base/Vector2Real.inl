@@ -219,7 +219,7 @@ template<> NODISCARD INLINE constexpr greaper::math::Vector2Real<type> Sign<grea
 
 INSTANTIATE_VEC2R_UTILS(float);
 INSTANTIATE_VEC2R_UTILS(double);
-INSTANTIATE_VEC2R_UTILS(long double);
+//INSTANTIATE_VEC2R_UTILS(long double);
 
 #undef INSTANTIATE_VEC2R_UTILS
 
