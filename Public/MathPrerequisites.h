@@ -8,7 +8,7 @@
 #ifndef MATH_PREREQUISITES_H
 #define MATH_PREREQUISITES_H 1
 
-#include "../../GreaperCore/Public/CorePrerequisites.h"
+#include "../../GreaperCore/Public/CorePrerequisites.hpp"
 
 namespace greaper::math
 {

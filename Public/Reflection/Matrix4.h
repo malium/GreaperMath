@@ -8,7 +8,7 @@
 #ifndef MATH_REFL_MATRIX4_H
 #define MATH_REFL_MATRIX4_H 1
 
-#include "../../../GreaperCore/Public/Reflection/PlainType.h"
+#include "../../../GreaperCore/Public/Reflection/PlainType.hpp"
 #include "../Matrix4.h"
 
 namespace greaper::refl

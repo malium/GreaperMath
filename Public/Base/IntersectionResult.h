@@ -5,6 +5,6 @@
 
 #pragma once
 
-#include "../../../GreaperCore/Public/Enumeration.h"
+#include "../../../GreaperCore/Public/Base/Enumeration.hpp"
 
 ENUMERATION(IntersectionResult, OUTSIDE, ON_THE_EDGE, PARTIALLY_INSIDE, FULLY_INSIDE);

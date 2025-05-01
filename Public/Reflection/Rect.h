@@ -8,7 +8,7 @@
 #ifndef MATH_REFL_RECT_H
 #define MATH_REFL_RECT_H 1
 
-#include "../../../GreaperCore/Public/Reflection/ComplexType.h"
+#include "../../../GreaperCore/Public/Reflection/ComplexType.hpp"
 #include "../Rect.h"
 
 #define CreateRectRefl(recttype)\

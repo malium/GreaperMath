@@ -9,7 +9,7 @@
 #define MATH_VECTOR2B_H 1
 
 #include "../MathPrerequisites.h"
-#include "../../../GreaperCore/Public/StringUtils.h"
+#include "../../../GreaperCore/Public/Base/StringUtils.hpp"
 #include <array>
 
 namespace greaper::math

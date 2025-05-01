@@ -8,7 +8,7 @@
 #ifndef MATH_REFL_QUATERNION_H
 #define MATH_REFL_QUATERNION_H 1
 
-#include "../../../GreaperCore/Public/Reflection/ComplexType.h"
+#include "../../../GreaperCore/Public/Reflection/ComplexType.hpp"
 #include "../Quaternion.h"
 
 #define CreateQuatRefl(quatType)\

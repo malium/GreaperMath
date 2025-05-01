@@ -8,7 +8,7 @@
 #ifndef MATH_REFL_VECTOR4_H
 #define MATH_REFL_VECTOR4_H 1
 
-#include "../../../GreaperCore/Public/Reflection/ComplexType.h"
+#include "../../../GreaperCore/Public/Reflection/ComplexType.hpp"
 #include "../Vector4.h"
 
 #define CreateVec4Refl(vectype)\

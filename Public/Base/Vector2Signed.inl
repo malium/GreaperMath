@@ -10,7 +10,7 @@
 
 #include "../MathPrerequisites.h"
 #include "StringConversion.inl"
-#include "../../../GreaperCore/Public/StringUtils.h"
+#include "../../../GreaperCore/Public/Base/StringUtils.hpp"
 #include <array>
 
 namespace greaper::math
