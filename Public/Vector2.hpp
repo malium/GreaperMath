@@ -14,38 +14,18 @@
 #include "Base/Vector2Signed.inl"
 #include "Base/Vector2Unsigned.inl"
 #include "Base/Vector2b.inl"
+#include "Reflection/MathAsContainer.hpp"
 
-#if MATH_USE_GREAPER_REFLECTION
-#include "../../GreaperCore/Public/Reflection/ComplexType.hpp"
-#define CreateVec2Refl(vectype)                                                                                        \
-namespace greaper{template<>                                                                                           \
-const Vector<std::shared_ptr<refl::IField>> refl::ComplexType<vectype>::Fields = {                                     \
-std::make_shared<refl::TField<vectype::value_type>>("X"sv,                                                             \
-(std::function<const void* (const void*)>)[](const void* obj) ->                                                       \
-	const void* { return &(((const vectype*)obj)->X); },                                                               \
-(std::function<void(void*, const void*)>)[](void* obj, const void* value)                                              \
-{ ((vectype*)obj)->X = *((const vectype::value_type*)value); }),                                                       \
-std::make_shared<refl::TField<vectype::value_type>>("Y"sv,                                                             \
-(std::function<const void* (const void*)>)[](const void* obj) ->                                                       \
-	const void* { return &(((const vectype*)obj)->Y); },                                                               \
-(std::function<void(void*, const void*)>)[](void* obj, const void* value)                                              \
-{ ((vectype*)obj)->Y = *((const vectype::value_type*)value); })};}                                                     \
-
-
-CreateVec2Refl(greaper::math::Vector2f);
-CreateVec2Refl(greaper::math::Vector2d);
-CreateVec2Refl(greaper::math::Vector2i);
-CreateVec2Refl(greaper::math::Vector2i8);
-CreateVec2Refl(greaper::math::Vector2i16);
-CreateVec2Refl(greaper::math::Vector2i64);
-CreateVec2Refl(greaper::math::Vector2u);
-CreateVec2Refl(greaper::math::Vector2u8);
-CreateVec2Refl(greaper::math::Vector2u16);
-CreateVec2Refl(greaper::math::Vector2u64);
-CreateVec2Refl(greaper::math::Vector2b);
-
-#undef CreateVec2Refl
-
-#endif
+ReflectAsContainer(greaper::math::Vector2f, 	greaper::refl::RTI_Vector2f);
+ReflectAsContainer(greaper::math::Vector2d, 	greaper::refl::RTI_Vector2d);
+ReflectAsContainer(greaper::math::Vector2i, 	greaper::refl::RTI_Vector2i);
+ReflectAsContainer(greaper::math::Vector2i8, 	greaper::refl::RTI_Vector2i8);
+ReflectAsContainer(greaper::math::Vector2i16, 	greaper::refl::RTI_Vector2i16);
+ReflectAsContainer(greaper::math::Vector2i64, 	greaper::refl::RTI_Vector2i64);
+ReflectAsContainer(greaper::math::Vector2u, 	greaper::refl::RTI_Vector2u);
+ReflectAsContainer(greaper::math::Vector2u8, 	greaper::refl::RTI_Vector2u8);
+ReflectAsContainer(greaper::math::Vector2u16, 	greaper::refl::RTI_Vector2u16);
+ReflectAsContainer(greaper::math::Vector2u64, 	greaper::refl::RTI_Vector2u64);
+ReflectAsContainer(greaper::math::Vector2b, 	greaper::refl::RTI_Vector2b);
 
 #endif /* MATH_VECTOR2_HPP */

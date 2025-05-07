@@ -14,42 +14,18 @@
 #include "Base/Vector3Signed.inl"
 #include "Base/Vector3Unsigned.inl"
 #include "Base/Vector3b.inl"
+#include "Reflection/MathAsContainer.hpp"
 
-#if MATH_USE_GREAPER_REFLECTION
-#include "../../GreaperCore/Public/Reflection/ComplexType.hpp"
-
-#define CreateVec3Refl(vectype)                                                                                        \
-namespace greaper{template<>                                                                                           \
-const Vector<std::shared_ptr<refl::IField>> refl::ComplexType<vectype>::Fields = {                                     \
-std::make_shared<refl::TField<vectype::value_type>>("X"sv,                                                             \
-(std::function<const void* (const void*)>)[](const void* obj) ->                                                       \
-	const void* { return &(((const vectype*)obj)->X); },                                                               \
-(std::function<void(void*, const void*)>)[](void* obj, const void* value)                                              \
-{ ((vectype*)obj)->X = *((const vectype::value_type*)value); }),                                                       \
-std::make_shared<refl::TField<vectype::value_type>>("Y"sv,                                                             \
-(std::function<const void* (const void*)>)[](const void* obj) ->                                                       \
-	const void* { return &(((const vectype*)obj)->Y); },                                                               \
-(std::function<void(void*, const void*)>)[](void* obj, const void* value)                                              \
-{ ((vectype*)obj)->Y = *((const vectype::value_type*)value); }),                                                       \
-std::make_shared<refl::TField<vectype::value_type>>("Z"sv,                                                             \
-(std::function<const void* (const void*)>)[](const void* obj) ->                                                       \
-	const void* { return &(((const vectype*)obj)->Z); },                                                               \
-(std::function<void(void*, const void*)>)[](void* obj, const void* value)                                              \
-{ ((vectype*)obj)->Z = *((const vectype::value_type*)value); })};}
-
-CreateVec3Refl(greaper::math::Vector3f);
-CreateVec3Refl(greaper::math::Vector3d);
-CreateVec3Refl(greaper::math::Vector3i);
-CreateVec3Refl(greaper::math::Vector3i8);
-CreateVec3Refl(greaper::math::Vector3i16);
-CreateVec3Refl(greaper::math::Vector3i64);
-CreateVec3Refl(greaper::math::Vector3u);
-CreateVec3Refl(greaper::math::Vector3u8);
-CreateVec3Refl(greaper::math::Vector3u16);
-CreateVec3Refl(greaper::math::Vector3u64);
-CreateVec3Refl(greaper::math::Vector3b);
-
-#undef CreateVec3Refl
-#endif
+ReflectAsContainer(greaper::math::Vector3f, 	greaper::refl::RTI_Vector3f);
+ReflectAsContainer(greaper::math::Vector3d, 	greaper::refl::RTI_Vector3d);
+ReflectAsContainer(greaper::math::Vector3i, 	greaper::refl::RTI_Vector3i);
+ReflectAsContainer(greaper::math::Vector3i8, 	greaper::refl::RTI_Vector3i8);
+ReflectAsContainer(greaper::math::Vector3i16, 	greaper::refl::RTI_Vector3i16);
+ReflectAsContainer(greaper::math::Vector3i64, 	greaper::refl::RTI_Vector3i64);
+ReflectAsContainer(greaper::math::Vector3u, 	greaper::refl::RTI_Vector3u);
+ReflectAsContainer(greaper::math::Vector3u8, 	greaper::refl::RTI_Vector3u8);
+ReflectAsContainer(greaper::math::Vector3u16, 	greaper::refl::RTI_Vector3u16);
+ReflectAsContainer(greaper::math::Vector3u64, 	greaper::refl::RTI_Vector3u64);
+ReflectAsContainer(greaper::math::Vector3b, 	greaper::refl::RTI_Vector3b);
 
 #endif /* MATH_VECTOR3_HPP */

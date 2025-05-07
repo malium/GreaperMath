@@ -24,8 +24,8 @@ namespace greaper::math
 		value_type Origin{};
 		value_type Direction{ T(0), T(1) };
 
-		constexpr Line2Real()noexcept = default;
-		INLINE constexpr Line2Real(value_type origin, value_type direction)noexcept
+		constexpr Line2T()noexcept = default;
+		INLINE constexpr Line2T(value_type origin, value_type direction)noexcept
 			:Origin(origin), Direction(direction) {  }
 
 		INLINE void Set(value_type origin, value_type direction)noexcept
@@ -34,12 +34,13 @@ namespace greaper::math
 			Direction = direction;
 		}
 		
-		NODISCARD INLINE constexpr bool IsNearlyEqual(const Line2Real& other,
+		template<class T, typename std::enable_if<std::is_floating_point_v<T>, bool>::type = false>
+		NODISCARD INLINE constexpr bool IsNearlyEqual(const Line2T& other,
 														T tolerance = MATH_TOLERANCE<T>)const noexcept
 		{
 			return Origin.IsNearlyEqual(other.Origin, tolerance) && Direction.IsNearlyEqual(other.Direction, tolerance);
 		}
-		NODISCARD INLINE constexpr bool IsEqual(const Line2Real& other)const noexcept
+		NODISCARD INLINE constexpr bool IsEqual(const Line2T& other)const noexcept
 		{
 			return Origin.IsEqual(other.Origin) && Direction.IsEqual(other.Direction);
 		}
@@ -53,7 +54,14 @@ namespace greaper::math
 	template<class T>
 	NODISCARD INLINE constexpr bool operator==(const Line2T<T>& left, const Line2T<T>& right)noexcept
 	{
-		return left.IsNearlyEqual(right);
+		if constexpr (std::is_floating_point_v<T>)
+		{
+			return left.IsNearlyEqual(right);
+		}
+		else
+		{
+			return left.IsEqual(right);
+		}
 	}
 	template<class T>
 	NODISCARD INLINE constexpr bool operator!=(const Line2T<T>& left, const Line2T<T>& right)noexcept

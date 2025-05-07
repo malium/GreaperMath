@@ -34,6 +34,7 @@ namespace greaper::math
 			Direction = direction;
 		}
 
+		template<class T, typename std::enable_if<std::is_floating_point_v<T>, bool>::type = false>
 		NODISCARD INLINE constexpr bool IsNearlyEqual(const Line3T& other,
 														T tolerance = MATH_TOLERANCE<T>)const noexcept
 		{
@@ -53,7 +54,14 @@ namespace greaper::math
 	template<class T>
 	NODISCARD INLINE constexpr bool operator==(const Line3T<T>& left, const Line3T<T>& right)noexcept
 	{
-		return left.IsNearlyEqual(right);
+		if constexpr (std::is_floating_point_v<T>)
+		{
+			return left.IsNearlyEqual(right);
+		}
+		else
+		{
+			return left.IsEqual(right);
+		}
 	}
 	template<class T>
 	NODISCARD INLINE constexpr bool operator!=(const Line3T<T>& left, const Line3T<T>& right)noexcept

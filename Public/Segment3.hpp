@@ -5,36 +5,36 @@
 
 #pragma once
 
-#ifndef MATH_SEGMENT2_HPP
-#define MATH_SEGMENT2_HPP 1
+#ifndef MATH_SEGMENT3_HPP
+#define MATH_SEGMENT3_HPP 1
 
-#include "Vector2.hpp"
+#include "Vector3.hpp"
 
 namespace greaper::math
 {
 	template<class T>
-	class Segment2T
+	class Segment3T
 	{
-		static_assert(std::is_arithmetic_v<T>,
-			"Segment2T can only be instanced with an integer or a floating point type.");
+		static_assert(std::is_floating_point_v<T>,
+			"Segment3T can only be instanced with an integer or a floating point type.");
 	public:
-		using value_type = typename std::conditional_t<std::is_floating_point_v<T>, math::Vector2Real<T>, 
-							std::conditional_t<std::is_signed_v<T>, math::Vector2Signed<T>, math::Vector2Unsigned<T>>>;
+		using value_type = typename std::conditional_t<std::is_floating_point_v<T>, math::value_type, 
+							std::conditional_t<std::is_signed_v<T>, math::Vector3Signed<T>, math::Vector3Unsigned<T>>>;
 		using decimal = typename std::conditional_t<std::is_same_v<T, double>, double, float>;
-		using vector = typename std::conditional_t<std::is_same_v<T, double>, Vector2d, Vector2f>;
+		using vector = typename std::conditional_t<std::is_same_v<T, double>, Vector3d, Vector3f>;
 
 		value_type Begin{};
 		value_type End{};
 
-		constexpr Segment2T()noexcept = default;
-		INLINE constexpr Segment2T(value_type begin, value_type end)noexcept :Begin(begin), End(end) {  }
+		constexpr Segment3T()noexcept = default;
+		INLINE constexpr Segment3T(value_type begin, value_type end)noexcept :Begin(begin), End(end) {  }
 
 		INLINE void Set(value_type begin, value_type end)noexcept
 		{
 			Begin = begin;
 			End = end;
 		}
-		INLINE void Set(const Segment2T& other)noexcept
+		INLINE void Set(const Segment3T& other)noexcept
 		{
 			Begin = other.Begin;
 			End = other.End;
@@ -42,64 +42,77 @@ namespace greaper::math
 
 		NODISCARD INLINE decimal Length()const noexcept
 		{
-			return vector((decimal)Begin.X, (decimal)Begin.Y).Distance(vector((decimal)End.X, (decimal)End.X));
+			return vector((decimal)Begin.X, (decimal)Begin.Y, (decimal)Begin.Z).Distance(
+				vector((decimal)End.X, (decimal)End.X, (decimal)End.Z));
 		}
 		NODISCARD INLINE constexpr vector GetDirectionWithMagnitude()const noexcept
 		{
-			return (vector((decimal)End.X, (decimal)End.Y) - vector((decimal)Begin.X, (decimal)Begin.Y));
+			return vector((decimal)End.X, (decimal)End.Y, (decimal)End.Z)
+				- vector((decimal)Begin.X, (decimal)Begin.Y, (decimal)Begin.Z);
 		}
 		NODISCARD INLINE vector GetDirection()const noexcept
 		{
 			return GetDirectionWithMagnitude().GetNormalized();
 		}
-		NODISCARD INLINE constexpr value_type PointAt(decimal segmentPCT)const noexcept
+		NODISCARD INLINE constexpr value_type PointAt(T segmentPCT)const noexcept
 		{
-			auto lrp = Lerp(vector((decimal)Begin.X, (decimal)Begin.Y),
-				vector((decimal)End.X, (decimal)End.Y), segmentPCT);
-			return value_type((T)lrp.X, (T)lrp.Y);
+			auto lrp = Lerp(vector((decimal)Begin.X, (decimal)Begin.Y, (decimal)Begin.Z),
+				vector((decimal)End.X, (decimal)End.Y, (decimal)End.Z), segmentPCT);
+			return value_type((T)lrp.X, (T)lrp.Y, (T)lrp.Z);
 		}
-		NODISCARD INLINE constexpr value_type PointAtUnclamped(decimal segmentPCT)const noexcept
+		NODISCARD INLINE constexpr value_type PointAtUnclamped(T segmentPCT)const noexcept
 		{
-			auto lrp = LerpUnclamped(vector((decimal)Begin.X, (decimal)Begin.Y),
-				vector((decimal)End.X, (decimal)End.Y), segmentPCT);
-			return value_type((T)lrp.X, (T)lrp.Y);
+			auto lrp = LerpUnclamped(vector((decimal)Begin.X, (decimal)Begin.Y, (decimal)Begin.Z),
+				vector((decimal)End.X, (decimal)End.Y, (decimal)End.Z), segmentPCT);
+			return value_type((T)lrp.X, (T)lrp.Y, (T)lrp.Z);
 		}
-//		INLINE constexpr std::optional<vector> Intersects(const Segment2T<T>& other)const noexcept
+//		NODISCARD INLINE constexpr bool IsPointInside(const value_type& point)const noexcept
 //		{
-//			std::tuple<bool, T, T> res = Impl::Line2LineIntersection(
-//				vector((decimal)Begin.X, (decimal)Begin.Y), GetDirectionWithMagnitude(),
-//				vector((decimal)other.Begin.X, (decimal)other.Begin.Y), other.GetDirectionWithMagnitude());
-//				
+//			value_type ba = End - Begin;
+//			value_type ca = point - Begin;
+//			T cross = ba.CrossProduct(ca);
+//			if(!::IsNearlyEqual(cross, T(0), MATH_TOLERANCE<T>))
+//				return false;
+//			
+//			T dot = ba.DotProduct(ca);
+//			if(dot < T(0))
+//				return false;
+//			
+//			T sqrtLengthBA = ba.LengthSquared();
+//			return dot <= sqrtLengthBA;
+//		}
+//		INLINE constexpr TReturn<value_type> Intersects(const Segment3T<T>& other)const noexcept
+//		{
+//			std::tuple<bool, T, T> res = Impl::Line2LineIntersection(Begin, GetDirectionWithMagnitude(), other.Begin, other.GetDirectionWithMagnitude());
 //			if (std::get<0>(res))
 //			{
 //				T tA = std::get<1>(res);
 //				T tB = std::get<2>(res);
-//				Vector2Real<T> point = PointAtUnclamped(tA);
+//				value_type point = PointAtUnclamped(tA);
 //				if(IsPointInside(point) && other.IsPointInside(point))
 //					return Return::CreateSuccess(point);
 //			}
-//			return Return::CreateFailure<Vector2Real<T>>();
+//			return Return::CreateFailure<value_type>();
 //		}
+
 		template<class T, typename std::enable_if<std::is_floating_point_v<T>, bool>::type = false>
-		NODISCARD INLINE constexpr bool IsNearlyEqual(const Segment2T<T>& other,
-			T tolerance = MATH_TOLERANCE<T>)const noexcept
+		NODISCARD INLINE constexpr bool IsNearlyEqual(const Segment3T& other, T tolerance = MATH_TOLERANCE<T>)const noexcept
 		{
 			return Begin.IsNearlyEqual(other.Begin, tolerance) && End.IsNearlyEqual(other.End, tolerance);
 		}
-		
-		NODISCARD INLINE constexpr bool IsEqual(const Segment2T<T>& other)const noexcept
+		NODISCARD INLINE constexpr bool IsEqual(const Segment3T& other)const noexcept
 		{
 			return Begin.IsEqual(other.Begin) && End.IsEqual(other.End);
 		}
 
 		NODISCARD INLINE String ToString()const noexcept
-		{ 
+		{
 			return std::format("{}, {}", Origin.ToString(), Direction.ToString());
 		}
 	};
-
+	
 	template<class T>
-	NODISCARD INLINE constexpr bool operator==(const Segment2T<T>& left, const Segment2T<T>& right)noexcept
+	NODISCARD INLINE constexpr bool operator==(const Segment3T<T>& left, const Segment3T<T>& right)noexcept
 	{
 		if constexpr (std::is_floating_point_v<T>)
 		{
@@ -111,7 +124,7 @@ namespace greaper::math
 		}
 	}
 	template<class T>
-	NODISCARD INLINE constexpr bool operator!=(const Segment2T<T>& left, const Segment2T<T>& right)noexcept
+	NODISCARD INLINE constexpr bool operator!=(const Segment3T<T>& left, const Segment3T<T>& right)noexcept
 	{
 		return !(left == right);
 	}
@@ -120,9 +133,9 @@ namespace greaper::math
 namespace std
 {
 	template<class T>
-	struct hash<greaper::math::Segment2T<T>>
+	struct hash<greaper::math::Segment3T<T>>
 	{
-		NODISCARD INLINE size_t operator()(const greaper::math::Segment2T<T>& s)const noexcept
+		NODISCARD INLINE size_t operator()(const greaper::math::Segment3T<T>& s)const noexcept
 		{
 			return ComputeHash(s.Begin, s.End);
 		}
@@ -130,7 +143,7 @@ namespace std
 }
 
 #if MATH_USE_GREAPER_REFLECTION
-#define CreateSegment2Refl(segmenttype)                                                                                \
+#define CreateSegment3Refl(segmenttype)                                                                                \
 namespace greaper{template<>                                                                                           \
 const Vector<std::shared_ptr<refl::IField>> refl::ComplexType<segmenttype>::Fields = {                                 \
 std::make_shared<refl::TField<segmenttype::value_type>>("Begin"sv,                                                     \
@@ -144,10 +157,10 @@ std::make_shared<refl::TField<segmenttype::value_type>>("End"sv,                
 (std::function<void(void*, const void*)>)[](void* obj, const void* value)                                              \
 { ((segmenttype*)obj)->End = *((const segmenttype::value_type*)value); })};}                                           \
 
-CreateSegment2Refl(greaper::math::Segment2f);
-CreateSegment2Refl(greaper::math::Segment2d);
-CreateSegment2Refl(greaper::math::Segment2i);
-CreateSegment2Refl(greaper::math::Segment2u);
+CreateSegment3Refl(greaper::math::Segment3f);
+CreateSegment3Refl(greaper::math::Segment3d);
+CreateSegment3Refl(greaper::math::Segment3i);
+CreateSegment3Refl(greaper::math::Segment3u);
 
 #endif
-#endif /* MATH_SEGMENT2_HPP */
+#endif /* MATH_SEGMENT3_HPP */
