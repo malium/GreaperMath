@@ -1,24 +1,17 @@
-/***********************************************************************************
-*   Copyright 2022 Marcos Sánchez Torrent.                                         *
-*   All Rights Reserved.                                                           *
-***********************************************************************************/
+/***********************************************************************************************************************
+ *                                   Copyright 2025 Marcos Sánchez Torrent (@malium)                                   *
+ *                                               All Rights Reserved                                                   *
+ **********************************************************************************************************************/
 
 #pragma once
-
-#ifndef MATH_VECTOR2SIGNED_H
-#define MATH_VECTOR2SIGNED_H 1
-
-#include "../MathPrerequisites.h"
-#include "StringConversion.inl"
-#include "../../../GreaperCore/Public/Base/StringUtils.hpp"
-#include <array>
 
 namespace greaper::math
 {
 	template<class T>
 	class Vector2Signed
 	{
-		static_assert(std::is_integral_v<T> && !std::is_unsigned_v<T>, "Vector2Signed can only work with signed intXX types");
+		static_assert(std::is_integral_v<T> && !std::is_unsigned_v<T>,
+			"Vector2Signed can only work with signed intXX types");
 
 	public:
 		static constexpr sizet ComponentCount = 2;
@@ -32,14 +25,26 @@ namespace greaper::math
 		INLINE constexpr explicit Vector2Signed(const std::array<T, ComponentCount>& arr) : X(arr[0]), Y(arr[1]) {  }
 		INLINE constexpr Vector2Signed operator-()const noexcept { return { -X, -Y }; }
 
-		NODISCARD INLINE constexpr T& operator[](sizet index)noexcept
+		NODISCARD INLINE explicit operator value_type*() noexcept
 		{
-			VerifyLess(index, ComponentCount, "Trying to access a Vector2, but the index %" PRIuPTR " was out of range.", index);
+			return reinterpret_cast<value_type*>(this);
+		}
+
+		NODISCARD INLINE explicit operator const value_type*()const noexcept
+		{
+			return reinterpret_cast<const value_type*>(this);
+		}
+
+		NODISCARD INLINE constexpr T& operator[](sizet index)
+		{
+			VerifyLess(index, ComponentCount, std::format(                                                             \
+				"Trying to access a Vector2, but the index {} was out of range.", index));
 			return (&X)[index];
 		}
-		NODISCARD INLINE constexpr const T& operator[](sizet index)const noexcept
+		NODISCARD INLINE constexpr const T& operator[](sizet index)const
 		{
-			VerifyLess(index, ComponentCount, "Trying to access a Vector2, but the index %" PRIuPTR " was out of range.", index);
+			VerifyLess(index, ComponentCount, std::format(                                                             \
+				"Trying to access a Vector2, but the index {} was out of range.", index));
 			return (&X)[index];
 		}
 		NODISCARD INLINE constexpr std::array<T, ComponentCount> ToArray()const noexcept
@@ -100,7 +105,8 @@ namespace greaper::math
 				::Clamp(Y, minAxeVal, maxAxeVal)
 			};
 		}
-		NODISCARD INLINE constexpr Vector2Signed GetClamped(const Vector2Signed& min, const Vector2Signed& max)const noexcept
+		NODISCARD INLINE constexpr Vector2Signed GetClamped(const Vector2Signed& min,
+			const Vector2Signed& max)const noexcept
 		{
 			return Vector2Signed{
 				::Clamp(X, min.X, max.X),
@@ -113,11 +119,7 @@ namespace greaper::math
 		}
 		NODISCARD INLINE String ToString()const noexcept
 		{
-			return Format(Impl::Vec2Conv<T>::print, X, Y);
-		}
-		INLINE void FromString(StringView str)noexcept
-		{
-			sscanf(str.data(), Impl::Vec2Conv<T>::scan, &X, &Y);
+			return std::format("{}, {}", X, Y);
 		}
 
 		static const Vector2Signed ZERO;
@@ -127,31 +129,75 @@ namespace greaper::math
 	template<class T> inline const Vector2Signed<T> Vector2Signed<T>::ZERO = Vector2Signed<T>{};
 	template<class T> inline const Vector2Signed<T> Vector2Signed<T>::UNIT = Vector2Signed<T>((T)1, (T)1);
 
-	template<class T> NODISCARD INLINE constexpr Vector2Signed<T> operator+(const Vector2Signed<T>& left, const Vector2Signed<T>& right)noexcept { return Vector2Signed<T>{ left.X + right.X, left.Y + right.Y }; }
-	template<class T> NODISCARD INLINE constexpr Vector2Signed<T> operator-(const Vector2Signed<T>& left, const Vector2Signed<T>& right)noexcept { return Vector2Signed<T>{ left.X - right.X, left.Y - right.Y }; }
-	template<class T> INLINE Vector2Signed<T>& operator+=(Vector2Signed<T>& left, const Vector2Signed<T>& right)noexcept { left.X += right.X; left.Y += right.Y; return left; }
-	template<class T> INLINE Vector2Signed<T>& operator-=(Vector2Signed<T>& left, const Vector2Signed<T>& right)noexcept { left.X -= right.X; left.Y -= right.Y; return left; }
+	template<class T>
+	NODISCARD INLINE constexpr Vector2Signed<T> operator+(const Vector2Signed<T>& left,
+		const Vector2Signed<T>& right)noexcept
+	{
+		return Vector2Signed<T>{ left.X + right.X, left.Y + right.Y };
+	}
+	template<class T>
+	NODISCARD INLINE constexpr Vector2Signed<T> operator-(const Vector2Signed<T>& left,
+		const Vector2Signed<T>& right)noexcept
+	{
+		return Vector2Signed<T>{ left.X - right.X, left.Y - right.Y };
+	}
+	template<class T> 
+	INLINE Vector2Signed<T>& operator+=(Vector2Signed<T>& left, const Vector2Signed<T>& right)noexcept
+	{
+		left.X += right.X; left.Y += right.Y; return left;
+	}
+	template<class T>
+	INLINE Vector2Signed<T>& operator-=(Vector2Signed<T>& left, const Vector2Signed<T>& right)noexcept
+	{
+		left.X -= right.X; left.Y -= right.Y; return left;
+	}
 
-	template<class T> NODISCARD INLINE constexpr Vector2Signed<T> operator*(const Vector2Signed<T>& left, T right)noexcept { return Vector2Signed<T>{ left.X* right, left.Y* right }; }
-	template<class T> NODISCARD INLINE constexpr Vector2Signed<T> operator/(const Vector2Signed<T>& left, T right)noexcept { return Vector2Signed<T>{ left.X / right, left.Y / right }; }
-	template<class T> NODISCARD INLINE constexpr Vector2Signed<T> operator*(T left, const Vector2Signed<T>& right)noexcept { return Vector2Signed<T>{ left* right.X, left* right.Y }; }
-	template<class T> INLINE Vector2Signed<T>& operator*=(Vector2Signed<T>& left, T right)noexcept { left.X *= right; left.Y *= right; return left; }
-	template<class T> INLINE Vector2Signed<T>& operator/=(Vector2Signed<T>& left, T right)noexcept { left.X /= right; left.Y /= right; return left; }
+	template<class T> 
+	NODISCARD INLINE constexpr Vector2Signed<T> operator*(const Vector2Signed<T>& left, T right)noexcept
+	{
+		return Vector2Signed<T>{ left.X* right, left.Y* right };
+	}
+	template<class T> 
+	NODISCARD INLINE constexpr Vector2Signed<T> operator/(const Vector2Signed<T>& left, T right)noexcept
+	{
+		return Vector2Signed<T>{ left.X / right, left.Y / right };
+	}
+	template<class T> 
+	NODISCARD INLINE constexpr Vector2Signed<T> operator*(T left, const Vector2Signed<T>& right)noexcept
+	{
+		return Vector2Signed<T>{ left* right.X, left* right.Y };
+	}
+	template<class T> 
+	INLINE Vector2Signed<T>& operator*=(Vector2Signed<T>& left, T right)noexcept
+	{
+		left.X *= right; left.Y *= right; return left;
+	}
+	template<class T> 
+	INLINE Vector2Signed<T>& operator/=(Vector2Signed<T>& left, T right)noexcept
+	{
+		left.X /= right; left.Y /= right; return left;
+	}
 
-	template<class T> NODISCARD INLINE constexpr bool operator==(const Vector2Signed<T>& left, const Vector2Signed<T>& right)noexcept { return left.IsEqual(right); }
-	template<class T> NODISCARD INLINE constexpr bool operator!=(const Vector2Signed<T>& left, const Vector2Signed<T>& right)noexcept { return !(left == right); }
+	template<class T> 
+	NODISCARD INLINE constexpr bool operator==(const Vector2Signed<T>& left, const Vector2Signed<T>& right)noexcept
+	{
+		return left.IsEqual(right);
+	}
+	template<class T> 
+	NODISCARD INLINE constexpr bool operator!=(const Vector2Signed<T>& left, const Vector2Signed<T>& right)noexcept
+	{
+		return !(left == right);
+	}
 }
 
-#define INSTANTIATE_VEC2S_UTILS(type)\
-template<> NODISCARD INLINE constexpr greaper::math::Vector2Signed<type> Abs<greaper::math::Vector2Signed<type>>(const greaper::math::Vector2Signed<type> a)noexcept{\
-	return a.GetAbs();\
-}\
-template<> NODISCARD INLINE constexpr greaper::math::Vector2Signed<type> Clamp<greaper::math::Vector2Signed<type>>(const greaper::math::Vector2Signed<type> a, const greaper::math::Vector2Signed<type> min, const greaper::math::Vector2Signed<type> max)noexcept{\
-	return a.GetClamped(min, max);\
-}\
-template<> NODISCARD INLINE constexpr greaper::math::Vector2Signed<type> Sign<greaper::math::Vector2Signed<type>>(const greaper::math::Vector2Signed<type> a)noexcept{\
-	return a.GetSignVector();\
-}
+#define INSTANTIATE_VEC2S_UTILS(type)                                                                                  \
+template<> NODISCARD INLINE constexpr greaper::math::Vector2Signed<type> Abs<greaper::math::Vector2Signed<type>>       \
+(const greaper::math::Vector2Signed<type> a)noexcept{ return a.GetAbs(); }                                             \
+template<> NODISCARD INLINE constexpr greaper::math::Vector2Signed<type> Clamp<greaper::math::Vector2Signed<type>>     \
+(const greaper::math::Vector2Signed<type> a, const greaper::math::Vector2Signed<type> min,                             \
+	const greaper::math::Vector2Signed<type> max)noexcept{ return a.GetClamped(min, max); }                            \
+template<> NODISCARD INLINE constexpr greaper::math::Vector2Signed<type> Sign<greaper::math::Vector2Signed<type>>      \
+(const greaper::math::Vector2Signed<type> a)noexcept{ return a.GetSignVector(); }
 
 INSTANTIATE_VEC2S_UTILS(int8);
 INSTANTIATE_VEC2S_UTILS(int16);
@@ -171,5 +217,3 @@ namespace std
 		}
 	};
 }
-
-#endif /* MATH_VECTOR2SIGNED_H */

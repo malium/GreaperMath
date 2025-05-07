@@ -1,24 +1,17 @@
-/***********************************************************************************
-*   Copyright 2022 Marcos Sánchez Torrent.                                         *
-*   All Rights Reserved.                                                           *
-***********************************************************************************/
+/***********************************************************************************************************************
+ *                                   Copyright 2025 Marcos Sánchez Torrent (@malium)                                   *
+ *                                               All Rights Reserved                                                   *
+ **********************************************************************************************************************/
 
 #pragma once
-
-#ifndef MATH_VECTOR2UNSIGNED_H
-#define MATH_VECTOR2UNSIGNED_H 1
-
-#include "../MathPrerequisites.h"
-#include "StringConversion.inl"
-#include "../../../GreaperCore/Public/Base/StringUtils.hpp"
-#include <array>
 
 namespace greaper::math
 {
 	template<class T>
 	class Vector2Unsigned
 	{
-		static_assert(std::is_integral_v<T>&& std::is_unsigned_v<T>, "Vector2Unsigned can only work with unsigned intXX types");
+		static_assert(std::is_integral_v<T>&& std::is_unsigned_v<T>,
+			"Vector2Unsigned can only work with unsigned intXX types");
 
 	public:
 		static constexpr sizet ComponentCount = 2;
@@ -31,14 +24,26 @@ namespace greaper::math
 		INLINE constexpr Vector2Unsigned(T x, T y)noexcept :X(x), Y(y) {  }
 		INLINE constexpr explicit Vector2Unsigned(const std::array<T, ComponentCount>& arr) : X(arr[0]), Y(arr[1]) {  }
 
-		NODISCARD INLINE constexpr T& operator[](sizet index)noexcept
+		NODISCARD INLINE explicit operator value_type*() noexcept
 		{
-			VerifyLess(index, ComponentCount, "Trying to access a Vector2, but the index %" PRIuPTR " was out of range.", index);
+			return reinterpret_cast<value_type*>(this);
+		}
+
+		NODISCARD INLINE explicit operator const value_type*()const noexcept
+		{
+			return reinterpret_cast<const value_type*>(this);
+		}
+
+		NODISCARD INLINE constexpr T& operator[](sizet index)
+		{
+			VerifyLess(index, ComponentCount, std::format(                                                             \
+				"Trying to access a Vector2, but the index {} was out of range.", index));
 			return (&X)[index];
 		}
-		NODISCARD INLINE constexpr const T& operator[](sizet index)const noexcept
+		NODISCARD INLINE constexpr const T& operator[](sizet index)const
 		{
-			VerifyLess(index, ComponentCount, "Trying to access a Vector2, but the index %" PRIuPTR " was out of range.", index);
+			VerifyLess(index, ComponentCount, std::format(                                                             \
+				"Trying to access a Vector2, but the index {} was out of range.", index));
 			return (&X)[index];
 		}
 		NODISCARD INLINE constexpr std::array<T, ComponentCount> ToArray()const noexcept
@@ -87,7 +92,8 @@ namespace greaper::math
 				::Clamp(Y, minAxeVal, maxAxeVal)
 			};
 		}
-		NODISCARD INLINE constexpr Vector2Unsigned GetClamped(const Vector2Unsigned& min, const Vector2Unsigned& max)const noexcept
+		NODISCARD INLINE constexpr Vector2Unsigned GetClamped(const Vector2Unsigned& min,
+			const Vector2Unsigned& max)const noexcept
 		{
 			return Vector2Unsigned{
 				::Clamp(X, min.X, max.X),
@@ -96,11 +102,7 @@ namespace greaper::math
 		}
 		NODISCARD INLINE String ToString()const noexcept
 		{
-			return Format(Impl::Vec2Conv<T>::print, X, Y);
-		}
-		INLINE void FromString(StringView str)noexcept
-		{
-			sscanf(str.data(), Impl::Vec2Conv<T>::scan, &X, &Y);
+			return std::format("{}, {}", X, Y);
 		}
 
 		static const Vector2Unsigned ZERO;
@@ -110,25 +112,73 @@ namespace greaper::math
 	template<class T> inline const Vector2Unsigned<T> Vector2Unsigned<T>::ZERO = Vector2Unsigned<T>{};
 	template<class T> inline const Vector2Unsigned<T> Vector2Unsigned<T>::UNIT = Vector2Unsigned<T>((T)1, (T)1);
 
-	template<class T> NODISCARD INLINE constexpr Vector2Unsigned<T> operator+(const Vector2Unsigned<T>& left, const Vector2Unsigned<T>& right)noexcept { return Vector2Unsigned<T>{ left.X + right.X, left.Y + right.Y }; }
-	template<class T> NODISCARD INLINE constexpr Vector2Unsigned<T> operator-(const Vector2Unsigned<T>& left, const Vector2Unsigned<T>& right)noexcept { return Vector2Unsigned<T>{ left.X - right.X, left.Y - right.Y }; }
-	template<class T> INLINE Vector2Unsigned<T>& operator+=(Vector2Unsigned<T>& left, const Vector2Unsigned<T>& right)noexcept { left.X += right.X; left.Y += right.Y; return left; }
-	template<class T> INLINE Vector2Unsigned<T>& operator-=(Vector2Unsigned<T>& left, const Vector2Unsigned<T>& right)noexcept { left.X -= right.X; left.Y -= right.Y; return left; }
+	template<class T> 
+	NODISCARD INLINE constexpr Vector2Unsigned<T> operator+(const Vector2Unsigned<T>& left,
+		const Vector2Unsigned<T>& right)noexcept
+	{
+		return Vector2Unsigned<T>{ left.X + right.X, left.Y + right.Y };
+	}
+	template<class T> 
+	NODISCARD INLINE constexpr Vector2Unsigned<T> operator-(const Vector2Unsigned<T>& left,
+		const Vector2Unsigned<T>& right)noexcept
+	{
+		return Vector2Unsigned<T>{ left.X - right.X, left.Y - right.Y };
+	}
+	template<class T> 
+	INLINE Vector2Unsigned<T>& operator+=(Vector2Unsigned<T>& left, const Vector2Unsigned<T>& right)noexcept
+	{
+		left.X += right.X; left.Y += right.Y; return left;
+	}
+	template<class T> 
+	INLINE Vector2Unsigned<T>& operator-=(Vector2Unsigned<T>& left, const Vector2Unsigned<T>& right)noexcept
+	{
+		left.X -= right.X; left.Y -= right.Y; return left;
+	}
 
-	template<class T> NODISCARD INLINE constexpr Vector2Unsigned<T> operator*(const Vector2Unsigned<T>& left, T right)noexcept { return Vector2Unsigned<T>{ left.X* right, left.Y* right }; }
-	template<class T> NODISCARD INLINE constexpr Vector2Unsigned<T> operator/(const Vector2Unsigned<T>& left, T right)noexcept { return Vector2Unsigned<T>{ left.X / right, left.Y / right }; }
-	template<class T> NODISCARD INLINE constexpr Vector2Unsigned<T> operator*(T left, const Vector2Unsigned<T>& right)noexcept { return Vector2Unsigned<T>{ left* right.X, left* right.Y }; }
-	template<class T> INLINE Vector2Unsigned<T>& operator*=(Vector2Unsigned<T>& left, T right)noexcept { left.X *= right; left.Y *= right; return left; }
-	template<class T> INLINE Vector2Unsigned<T>& operator/=(Vector2Unsigned<T>& left, T right)noexcept { left.X /= right; left.Y /= right; return left; }
+	template<class T> 
+	NODISCARD INLINE constexpr Vector2Unsigned<T> operator*(const Vector2Unsigned<T>& left, T right)noexcept
+	{
+		return Vector2Unsigned<T>{ left.X* right, left.Y* right };
+	}
+	template<class T> 
+	NODISCARD INLINE constexpr Vector2Unsigned<T> operator/(const Vector2Unsigned<T>& left, T right)noexcept
+	{
+		return Vector2Unsigned<T>{ left.X / right, left.Y / right };
+	}
+	template<class T> 
+	NODISCARD INLINE constexpr Vector2Unsigned<T> operator*(T left, const Vector2Unsigned<T>& right)noexcept
+	{
+		return Vector2Unsigned<T>{ left* right.X, left* right.Y };
+	}
+	template<class T> 
+	INLINE Vector2Unsigned<T>& operator*=(Vector2Unsigned<T>& left, T right)noexcept
+	{
+		left.X *= right; left.Y *= right; return left;
+	}
+	template<class T> 
+	INLINE Vector2Unsigned<T>& operator/=(Vector2Unsigned<T>& left, T right)noexcept
+	{
+		left.X /= right; left.Y /= right; return left;
+	}
 
-	template<class T> NODISCARD INLINE constexpr bool operator==(const Vector2Unsigned<T>& left, const Vector2Unsigned<T>& right)noexcept { return left.IsEqual(right); }
-	template<class T> NODISCARD INLINE constexpr bool operator!=(const Vector2Unsigned<T>& left, const Vector2Unsigned<T>& right)noexcept { return !(left == right); }
+	template<class T> 
+	NODISCARD INLINE constexpr bool operator==(const Vector2Unsigned<T>& left, const Vector2Unsigned<T>& right)noexcept
+	{
+		return left.IsEqual(right);
+	}
+	template<class T> 
+	NODISCARD INLINE constexpr bool operator!=(const Vector2Unsigned<T>& left, const Vector2Unsigned<T>& right)noexcept
+	{
+		return !(left == right);
+	}
 }
 
 #define INSTANTIATE_VEC2U_UTILS(type)\
-template<> NODISCARD INLINE constexpr greaper::math::Vector2Unsigned<type> Clamp<greaper::math::Vector2Unsigned<type>>(const greaper::math::Vector2Unsigned<type> a, const greaper::math::Vector2Unsigned<type> min, const greaper::math::Vector2Unsigned<type> max)noexcept{\
-	return a.GetClamped(min, max);\
-}
+template<> NODISCARD INLINE constexpr greaper::math::Vector2Unsigned<type> Clamp<greaper::math::Vector2Unsigned<type>> \
+(const greaper::math::Vector2Unsigned<type> a, const greaper::math::Vector2Unsigned<type> min,                         \
+	const greaper::math::Vector2Unsigned<type> max)noexcept{\
+	return a.GetClamped(min, max); }
+
 INSTANTIATE_VEC2U_UTILS(uint8);
 INSTANTIATE_VEC2U_UTILS(uint16);
 INSTANTIATE_VEC2U_UTILS(uint32);
@@ -147,5 +197,3 @@ namespace std
 		}
 	};
 }
-
-#endif /* MATH_VECTOR2UNSIGNED_H */

@@ -1,15 +1,9 @@
-/***********************************************************************************
-*   Copyright 2022 Marcos Sánchez Torrent.                                         *
-*   All Rights Reserved.                                                           *
-***********************************************************************************/
+/***********************************************************************************************************************
+ *                                   Copyright 2025 Marcos Sánchez Torrent (@malium)                                   *
+ *                                               All Rights Reserved                                                   *
+ **********************************************************************************************************************/
 
 #pragma once
-
-#ifndef MATH_VECTOR3REAL_H
-#define MATH_VECTOR3REAL_H 1
-
-#include "Vector2Real.inl"
-#include "VecRef.h"
 
 namespace greaper::math
 {
@@ -28,21 +22,33 @@ namespace greaper::math
 
 		constexpr Vector3Real()noexcept = default;
 		INLINE constexpr Vector3Real(T x, T y, T z)noexcept :X(x), Y(y), Z(z) {  }
-		INLINE constexpr explicit Vector3Real(const std::array<T, ComponentCount>& arr) : X(arr[0]), Y(arr[1]), Z(arr[2]) {  }
+		INLINE constexpr explicit Vector3Real(const std::array<T, ComponentCount>& arr) 
+			:X(arr[0]), Y(arr[1]), Z(arr[2]) {  }
 		INLINE constexpr Vector3Real(const Vector2Real<T>& v2, T z)noexcept :X(v2.X), Y(v2.Y), Z(z) {  }
 		INLINE constexpr Vector3Real operator-()const noexcept { return { -X, -Y, -Z }; }
 
+		NODISCARD INLINE explicit operator value_type*() noexcept
+		{
+			return reinterpret_cast<value_type*>(this);
+		}
+
+		NODISCARD INLINE explicit operator const value_type*()const noexcept
+		{
+			return reinterpret_cast<const value_type*>(this);
+		}
+
 		NODISCARD INLINE constexpr T& operator[](sizet index)noexcept
 		{
-			VerifyLess(index, ComponentCount, "Trying to access a Vector3, but the index %" PRIuPTR " was out of range.", index);
+			VerifyLess(index, ComponentCount, std::format(                                                             \
+				"Trying to access a Vector3, but the index {} was out of range.", index));
 			return (&X)[index];
 		}
 		NODISCARD INLINE constexpr const T& operator[](sizet index)const noexcept
 		{
-			VerifyLess(index, ComponentCount, "Trying to access a Vector3, but the index %" PRIuPTR " was out of range.", index);
+			VerifyLess(index, ComponentCount, std::format(                                                             \
+				"Trying to access a Vector3, but the index {} was out of range.", index));
 			return (&X)[index];
 		}
-		DEF_SWIZZLE_VEC3();
 		NODISCARD INLINE constexpr std::array<T, ComponentCount> ToArray()const noexcept
 		{
 			return { X, Y, Z };
@@ -103,9 +109,11 @@ namespace greaper::math
 		{
 			*this = GetNormalized(tolerance);
 		}
-		NODISCARD INLINE constexpr bool IsNearlyEqual(const Vector3Real& other, T tolerance = MATH_TOLERANCE<T>)const noexcept
+		NODISCARD INLINE constexpr bool IsNearlyEqual(const Vector3Real& other,
+													T tolerance = MATH_TOLERANCE<T>)const noexcept
 		{
-			return ::IsNearlyEqual(X, other.X, tolerance) && ::IsNearlyEqual(Y, other.Y, tolerance) && ::IsNearlyEqual(Z, other.Z, tolerance);
+			return ::IsNearlyEqual(X, other.X, tolerance) && ::IsNearlyEqual(Y, other.Y, tolerance)
+				&& ::IsNearlyEqual(Z, other.Z, tolerance);
 		}
 		NODISCARD INLINE constexpr bool IsEqual(const Vector3Real& other)const noexcept
 		{
@@ -203,37 +211,75 @@ namespace greaper::math
 	template<class T> inline const Vector3Real<T> Vector3Real<T>::FRONT = Vector3Real<T>((T)0, (T)0, (T)1);
 	template<class T> inline const Vector3Real<T> Vector3Real<T>::BACK = Vector3Real<T>((T)0, (T)0, (T)-1);
 
-	template<class T> NODISCARD INLINE constexpr Vector3Real<T> operator+(const Vector3Real<T>& left, const Vector3Real<T>& right)noexcept { return Vector3Real<T>{ left.X + right.X, left.Y + right.Y, left.Z + right.Z }; }
-	template<class T> NODISCARD INLINE constexpr Vector3Real<T> operator-(const Vector3Real<T>& left, const Vector3Real<T>& right)noexcept { return Vector3Real<T>{ left.X - right.X, left.Y - right.Y, left.Z - right.Z }; }
-	template<class T> INLINE Vector3Real<T>& operator+=(Vector3Real<T>& left, const Vector3Real<T>& right)noexcept { left.X += right.X; left.Y += right.Y; left.Z += right.Z; return left; }
-	template<class T> INLINE Vector3Real<T>& operator-=(Vector3Real<T>& left, const Vector3Real<T>& right)noexcept { left.X -= right.X; left.Y -= right.Y; left.Z -= right.Z; return left; }
+	template<class T>
+	NODISCARD INLINE constexpr Vector3Real<T> operator+(const Vector3Real<T>& left, const Vector3Real<T>& right)noexcept
+	{
+		return Vector3Real<T>{ left.X + right.X, left.Y + right.Y, left.Z + right.Z };
+	}
+	template<class T>
+	NODISCARD INLINE constexpr Vector3Real<T> operator-(const Vector3Real<T>& left, const Vector3Real<T>& right)noexcept
+	{
+		return Vector3Real<T>{ left.X - right.X, left.Y - right.Y, left.Z - right.Z };
+	}
+	template<class T> INLINE Vector3Real<T>& operator+=(Vector3Real<T>& left, const Vector3Real<T>& right)noexcept
+	{
+		left.X += right.X; left.Y += right.Y; left.Z += right.Z; return left;
+	}
+	template<class T> INLINE Vector3Real<T>& operator-=(Vector3Real<T>& left, const Vector3Real<T>& right)noexcept
+	{
+		left.X -= right.X; left.Y -= right.Y; left.Z -= right.Z; return left;
+	}
 
-	template<class T> NODISCARD INLINE constexpr Vector3Real<T> operator*(const Vector3Real<T>& left, T right)noexcept { return Vector3Real<T>{ left.X* right, left.Y* right, left.Z* right }; }
-	template<class T> NODISCARD INLINE constexpr Vector3Real<T> operator/(const Vector3Real<T>& left, T right)noexcept { float invRight = T(1) / right; return Vector3Real<T>{ left.X* invRight, left.Y* invRight, left.Z* invRight }; }
-	template<class T> NODISCARD INLINE constexpr Vector3Real<T> operator*(T left, const Vector3Real<T>& right)noexcept { return Vector3Real<T>{ left* right.X, left* right.Y, left* right.Z }; }
-	template<class T> INLINE Vector3Real<T>& operator*=(Vector3Real<T>& left, T right)noexcept { left.X *= right; left.Y *= right; left.Z *= right; return left; }
-	template<class T> INLINE Vector3Real<T>& operator/=(Vector3Real<T>& left, T right)noexcept { float invRight = T(1) / right; left.X *= invRight; left.Y *= invRight; left.Z *= invRight; return left; }
+	template<class T> NODISCARD INLINE constexpr Vector3Real<T> operator*(const Vector3Real<T>& left, T right)noexcept
+	{
+		return Vector3Real<T>{ left.X* right, left.Y* right, left.Z* right };
+	}
+	template<class T> NODISCARD INLINE constexpr Vector3Real<T> operator/(const Vector3Real<T>& left, T right)noexcept
+	{
+		float invRight = T(1) / right; return Vector3Real<T>{ left.X* invRight, left.Y* invRight, left.Z* invRight };
+	}
+	template<class T> NODISCARD INLINE constexpr Vector3Real<T> operator*(T left, const Vector3Real<T>& right)noexcept
+	{
+		return Vector3Real<T>{ left* right.X, left* right.Y, left* right.Z };
+	}
+	template<class T> INLINE Vector3Real<T>& operator*=(Vector3Real<T>& left, T right)noexcept
+	{
+		left.X *= right; left.Y *= right; left.Z *= right; return left;
+	}
+	template<class T> INLINE Vector3Real<T>& operator/=(Vector3Real<T>& left, T right)noexcept
+	{
+		float invRight = T(1) / right; left.X *= invRight; left.Y *= invRight; left.Z *= invRight; return left;
+	}
 
-	template<class T> NODISCARD INLINE constexpr bool operator==(const Vector3Real<T>& left, const Vector3Real<T>& right)noexcept { return left.IsNearlyEqual(right); }
-	template<class T> NODISCARD INLINE constexpr bool operator!=(const Vector3Real<T>& left, const Vector3Real<T>& right)noexcept { return !(left == right); }
+	template<class T>
+	NODISCARD INLINE constexpr bool operator==(const Vector3Real<T>& left, const Vector3Real<T>& right)noexcept
+	{
+		return left.IsNearlyEqual(right);
+	}
+	template<class T>
+	NODISCARD INLINE constexpr bool operator!=(const Vector3Real<T>& left, const Vector3Real<T>& right)noexcept
+	{
+		return !(left == right);
+	}
 }
 
-#define INSTANTIATE_VEC3R_UTILS(type)\
-template<> NODISCARD INLINE constexpr greaper::math::Vector3Real<type> Abs<greaper::math::Vector3Real<type>>(const greaper::math::Vector3Real<type> a)noexcept{\
-	return a.GetAbs();\
-}\
-template<> NODISCARD INLINE constexpr greaper::math::Vector3Real<type> Clamp<greaper::math::Vector3Real<type>>(const greaper::math::Vector3Real<type> a, const greaper::math::Vector3Real<type> min, const greaper::math::Vector3Real<type> max)noexcept{\
-	return a.GetClamped(min, max);\
-}\
-template<> NODISCARD INLINE constexpr greaper::math::Vector3Real<type> ClampZeroToOne<greaper::math::Vector3Real<type>>(const greaper::math::Vector3Real<type> a)noexcept{\
-	return a.GetClampledAxes(type(0), type(1));\
-}\
-template<> NODISCARD INLINE constexpr greaper::math::Vector3Real<type> ClampNegOneToOne<greaper::math::Vector3Real<type>>(const greaper::math::Vector3Real<type> a)noexcept{\
-	return a.GetClampledAxes(type(-1), type(1));\
-}\
-template<> NODISCARD INLINE constexpr greaper::math::Vector3Real<type> Sign<greaper::math::Vector3Real<type>>(const greaper::math::Vector3Real<type> a)noexcept{\
-	return a.GetSignVector();\
-}
+#define INSTANTIATE_VEC3R_UTILS(type)                                                                                  \
+template<>                                                                                                             \
+NODISCARD INLINE constexpr greaper::math::Vector3Real<type> Abs<greaper::math::Vector3Real<type>>                      \
+(const greaper::math::Vector3Real<type> a)noexcept{ return a.GetAbs(); }                                               \
+template<>                                                                                                             \
+NODISCARD INLINE constexpr greaper::math::Vector3Real<type> Clamp<greaper::math::Vector3Real<type>>                    \
+(const greaper::math::Vector3Real<type> a, const greaper::math::Vector3Real<type> min,                                 \
+	const greaper::math::Vector3Real<type> max)noexcept{ return a.GetClamped(min, max); }                              \
+template<>                                                                                                             \
+NODISCARD INLINE constexpr greaper::math::Vector3Real<type> ClampZeroToOne<greaper::math::Vector3Real<type>>           \
+(const greaper::math::Vector3Real<type> a)noexcept{ return a.GetClampledAxes(type(0), type(1)); }                      \
+template<>                                                                                                             \
+NODISCARD INLINE constexpr greaper::math::Vector3Real<type> ClampNegOneToOne<greaper::math::Vector3Real<type>>         \
+(const greaper::math::Vector3Real<type> a)noexcept{	return a.GetClampledAxes(type(-1), type(1)); }                     \
+template<>                                                                                                             \
+NODISCARD INLINE constexpr greaper::math::Vector3Real<type> Sign<greaper::math::Vector3Real<type>>                     \
+(const greaper::math::Vector3Real<type> a)noexcept{ return a.GetSignVector(); }
 
 INSTANTIATE_VEC3R_UTILS(float);
 INSTANTIATE_VEC3R_UTILS(double);
@@ -252,5 +298,3 @@ namespace std
 		}
 	};
 }
-
-#endif /* MATH_VECTOR3REAL_H */

@@ -1,19 +1,18 @@
-/***********************************************************************************
-*   Copyright 2022 Marcos Sánchez Torrent.                                         *
-*   All Rights Reserved.                                                           *
-***********************************************************************************/
+/***********************************************************************************************************************
+ *                                   Copyright 2025 Marcos Sánchez Torrent (@malium)                                   *
+ *                                               All Rights Reserved                                                   *
+ **********************************************************************************************************************/
 
 #pragma once
 
-#ifndef MATH_RECT_H
-#define MATH_RECT_H 1
+#ifndef MATH_RECT_HPP
+#define MATH_RECT_HPP 1
 
-#include "MathPrerequisites.h"
-#include "Vector2.h"
+#include "Vector2.hpp"
 #if PLT_WINDOWS
 #include "../../GreaperCore/Public/Win/Win32Base.h"
 #endif
-#include "Base/IntersectionResult.h"
+#include "Base/IntersectionResult.hpp"
 
 namespace greaper::math
 {
@@ -244,48 +243,7 @@ namespace greaper::math
 	template<class T>
 	NODISCARD INLINE String RectT<T>::ToString()const noexcept
 	{ 
-		String left = TCategory::ToString(Left);
-		String top = TCategory::ToString(Top);
-		String right = TCategory::ToString(Right);
-		String bottom = TCategory::ToString(Bottom);
-		return String{'[' + left + ", " + top + "](" + right + ", " + bottom + ')'};
-	}
-
-	template<class T>
-	INLINE bool RectT<T>::FromString(const String& str) noexcept
-	{
-		const auto ltBegin = str.find_first_of('[');
-		const auto ltEnd = str.find_first_of(']');
-		const auto rbBegin = str.find_first_of('(');
-		const auto rbEnd = str.find_last_of(')');
-
-		if(ltBegin == String::npos || ltEnd == String::npos
-			|| rbBegin == String::npos || rbEnd == String::npos)
-		{
-			return false; // Tokens not found
-		}
-
-		StringVec ltSplit = StringUtils::Tokenize(str.substr(ltBegin+1, ltEnd - ltBegin), ',');
-		for(auto& s : ltSplit) StringUtils::TrimSelf(s);
-		StringVec rbSplit = StringUtils::Tokenize(str.substr(rbBegin + 1, rbEnd - rbBegin), ',');
-		for(auto& s : rbSplit) StringUtils::TrimSelf(s);
-
-		if(ltSplit.size() != 2 || rbSplit.size() != 2)
-		{
-			return false; // Wrong split size
-		}
-		
-		if(TCategory::FromString(Left, ltSplit[0]).HasFailed()) 
-			return false;
-		if(TCategory::FromString(Top, ltSplit[1]).HasFailed())
-			return false;
-
-		if(TCategory::FromString(Right, rbSplit[0]).HasFailed())
-			return false;
-		if(TCategory::FromString(Bottom, rbSplit[1]).HasFailed())
-			return false;
-
-		return true;
+		return std::format("{}, {}, {}, {}", Left, Top, Right, Bottom);
 	}
 }
 
@@ -301,4 +259,35 @@ namespace std
 	};
 }
 
-#endif /* MATH_RECT_H */
+#if MATH_USE_GREAPER_REFLECTION
+#define CreateRectRefl(recttype)\
+namespace greaper{template<>                                                                                           \
+const Vector<std::shared_ptr<refl::IField>> refl::ComplexType<recttype>::Fields = {                                    \
+std::make_shared<refl::TField<recttype::value_type>>("Left"sv,                                                         \
+(std::function<const void* (const void*)>)[](const void* obj) ->                                                       \
+	const void* { return &(((const recttype*)obj)->Left); },                                                           \
+(std::function<void(void*, const void*)>)[](void* obj, const void* value)                                              \
+{ ((recttype*)obj)->Left = *((const recttype::value_type*)value); }),                                                  \
+std::make_shared<refl::TField<recttype::value_type>>("Top"sv,                                                          \
+(std::function<const void* (const void*)>)[](const void* obj) ->                                                       \
+	const void* { return &(((const recttype*)obj)->Top); },                                                            \
+(std::function<void(void*, const void*)>)[](void* obj, const void* value)                                              \
+{ ((recttype*)obj)->Top = *((const recttype::value_type*)value); }),                                                   \
+std::make_shared<refl::TField<recttype::value_type>>("Right"sv,                                                        \
+(std::function<const void* (const void*)>)[](const void* obj) ->                                                       \
+	const void* { return &(((const recttype*)obj)->Right); },                                                          \
+(std::function<void(void*, const void*)>)[](void* obj, const void* value)                                              \
+{ ((recttype*)obj)->Right = *((const recttype::value_type*)value); }),                                                 \
+std::make_shared<refl::TField<recttype::value_type>>("Bottom"sv,                                                       \
+(std::function<const void* (const void*)>)[](const void* obj) ->                                                       \
+	const void* { return &(((const recttype*)obj)->Bottom); },                                                         \
+(std::function<void(void*, const void*)>)[](void* obj, const void* value)                                              \
+{ ((recttype*)obj)->Bottom = *((const recttype::value_type*)value); })};}
+
+CreateRectRefl(greaper::math::RectF);
+CreateRectRefl(greaper::math::RectD);
+CreateRectRefl(greaper::math::RectI);
+CreateRectRefl(greaper::math::RectU);
+#endif
+
+#endif /* MATH_RECT_HPP */

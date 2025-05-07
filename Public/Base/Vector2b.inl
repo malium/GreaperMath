@@ -1,16 +1,9 @@
-/***********************************************************************************
-*   Copyright 2022 Marcos Sánchez Torrent.                                         *
-*   All Rights Reserved.                                                           *
-***********************************************************************************/
+/***********************************************************************************************************************
+ *                                   Copyright 2025 Marcos Sánchez Torrent (@malium)                                   *
+ *                                               All Rights Reserved                                                   *
+ **********************************************************************************************************************/
 
 #pragma once
-
-#ifndef MATH_VECTOR2B_H
-#define MATH_VECTOR2B_H 1
-
-#include "../MathPrerequisites.h"
-#include "../../../GreaperCore/Public/Base/StringUtils.hpp"
-#include <array>
 
 namespace greaper::math
 {
@@ -27,14 +20,26 @@ namespace greaper::math
 		INLINE constexpr Vector2b(bool x, bool y)noexcept :X(x), Y(y) {  }
 		INLINE constexpr explicit Vector2b(const std::array<bool, ComponentCount>& arr) : X(arr[0]), Y(arr[1]) {  }
 
-		NODISCARD INLINE constexpr bool& operator[](sizet index)noexcept
+		NODISCARD INLINE explicit operator value_type*() noexcept
 		{
-			VerifyLess(index, ComponentCount, "Trying to access a Vector2, but the index %" PRIuPTR " was out of range.", index);
+			return reinterpret_cast<value_type*>(this);
+		}
+
+		NODISCARD INLINE explicit operator const value_type*()const noexcept
+		{
+			return reinterpret_cast<const value_type*>(this);
+		}
+
+		NODISCARD INLINE constexpr bool& operator[](sizet index)
+		{
+			VerifyLess(index, ComponentCount, std::format(                                                             \
+				"Trying to access a Vector2, but the index {} was out of range.", index));
 			return (&X)[index];
 		}
-		NODISCARD INLINE constexpr const bool& operator[](sizet index)const noexcept
+		NODISCARD INLINE constexpr const bool& operator[](sizet index)const
 		{
-			VerifyLess(index, ComponentCount, "Trying to access a Vector2, but the index %" PRIuPTR " was out of range.", index);
+			VerifyLess(index, ComponentCount, std::format(                                                             \
+				"Trying to access a Vector2, but the index {} was out of range.", index));
 			return (&X)[index];
 		}
 		NODISCARD INLINE constexpr std::array<bool, ComponentCount> ToArray()const noexcept
@@ -70,31 +75,7 @@ namespace greaper::math
 		}
 		NODISCARD INLINE String ToString()const noexcept
 		{
-			static constexpr StringView trueValueTxt = "true"sv;
-			static constexpr StringView falseValueTxt = "false"sv;
-			static constexpr StringView splitTxt = ", "sv;
-			static constexpr auto maxValueSize = Max(trueValueTxt.length(), falseValueTxt.length());
-			static constexpr auto maxStringSize = ComponentCount * maxValueSize + (ComponentCount - 1) * splitTxt.length();
-
-			String rtn;
-			rtn.reserve(maxStringSize);
-			auto x = X ? trueValueTxt : falseValueTxt;
-			auto y = Y ? trueValueTxt : falseValueTxt;
-			return rtn.append(x).append(splitTxt).append(y);
-		}
-		INLINE bool FromString(StringView str)noexcept
-		{
-			auto split = StringUtils::Tokenize(str, ',');
-			if (split.size() != ComponentCount)
-				return false;
-
-			for (auto& r : split)
-				StringUtils::ToLowerSelf(StringUtils::TrimSelf(r));
-
-			X = split[0] == "true"sv;
-			Y = split[1] == "true"sv;
-
-			return true;
+			return std::format("{}, {}", X, Y);
 		}
 
 		static const Vector2b ZERO;
@@ -104,8 +85,14 @@ namespace greaper::math
 	inline const Vector2b Vector2b::ZERO = Vector2b{};
 	inline const Vector2b Vector2b::UNIT = Vector2b(true, true);
 
-	NODISCARD INLINE constexpr bool operator==(const Vector2b& left, const Vector2b& right)noexcept { return left.IsEqual(right); }
-	NODISCARD INLINE constexpr bool operator!=(const Vector2b& left, const Vector2b& right)noexcept { return !(left == right); }
+	NODISCARD INLINE constexpr bool operator==(const Vector2b& left, const Vector2b& right)noexcept
+	{
+		return left.IsEqual(right);
+	}
+	NODISCARD INLINE constexpr bool operator!=(const Vector2b& left, const Vector2b& right)noexcept
+	{
+		return !(left == right);
+	}
 }
 
 namespace std
@@ -119,5 +106,3 @@ namespace std
 		}
 	};
 }
-
-#endif /* MATH_VECTOR2B_H */

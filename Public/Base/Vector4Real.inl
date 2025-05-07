@@ -1,15 +1,9 @@
-/***********************************************************************************
-*   Copyright 2022 Marcos Sánchez Torrent.                                         *
-*   All Rights Reserved.                                                           *
-***********************************************************************************/
+/***********************************************************************************************************************
+ *                                   Copyright 2025 Marcos Sánchez Torrent (@malium)                                   *
+ *                                               All Rights Reserved                                                   *
+ **********************************************************************************************************************/
 
 #pragma once
-
-#ifndef MATH_VECTOR4REAL_H
-#define MATH_VECTOR4REAL_H 1
-
-#include "Vector3Real.inl"
-#include "VecRef.h"
 
 namespace greaper::math
 {
@@ -29,23 +23,37 @@ namespace greaper::math
 
 		constexpr Vector4Real()noexcept = default;
 		INLINE constexpr Vector4Real(T x, T y, T z, T w)noexcept :X(x), Y(y), Z(z), W(w) {  }
-		INLINE constexpr explicit Vector4Real(const std::array<T, ComponentCount>& arr) : X(arr[0]), Y(arr[1]), Z(arr[2]), W(arr[3]) {  }
+		INLINE constexpr explicit Vector4Real(const std::array<T, ComponentCount>& arr)
+			:X(arr[0]), Y(arr[1]), Z(arr[2]), W(arr[3]) {  }
 		INLINE constexpr Vector4Real(const Vector2Real<T>& v2, T z, T w)noexcept :X(v2.X), Y(v2.Y), Z(z), W(w) {  }
-		INLINE constexpr Vector4Real(const Vector2Real<T>& v20, const Vector2Real<T>& v21)noexcept :X(v20.X), Y(v20.Y), Z(v21.X), W(v21.Y) {  }
+		INLINE constexpr Vector4Real(const Vector2Real<T>& v20, const Vector2Real<T>& v21)noexcept
+			:X(v20.X), Y(v20.Y), Z(v21.X), W(v21.Y) {  }
 		INLINE constexpr Vector4Real(const Vector3Real<T>& v3, T w)noexcept :X(v3.X), Y(v3.Y), Z(v3.Z), W(w) {  }
 		INLINE constexpr Vector4Real operator-()const noexcept { return { -X, -Y, -Z, -W }; }
 
+		NODISCARD INLINE explicit operator value_type*() noexcept
+		{
+			return reinterpret_cast<value_type*>(this);
+		}
+
+		NODISCARD INLINE explicit operator const value_type*()const noexcept
+		{
+			return reinterpret_cast<const value_type*>(this);
+		}
+
 		NODISCARD INLINE constexpr T& operator[](sizet index)noexcept
 		{
-			VerifyLess(index, ComponentCount, "Trying to access a Vector4, but the index %" PRIuPTR " was out of range.", index);
+			VerifyLess(index, ComponentCount, std::format(                                                             \
+				"Trying to access a Vector4, but the index {} was out of range.", index));
 			return (&X)[index];
 		}
 		NODISCARD INLINE constexpr const T& operator[](sizet index)const noexcept
 		{
-			VerifyLess(index, ComponentCount, "Trying to access a Vector4, but the index %" PRIuPTR " was out of range.", index);
+			VerifyLess(index, ComponentCount, std::format(                                                             \
+				"Trying to access a Vector4, but the index {} was out of range.", index));
 			return (&X)[index];
 		}
-		DEF_SWIZZLE_VEC4();
+		
 		NODISCARD INLINE constexpr std::array<T, ComponentCount> ToArray()const noexcept
 		{
 			return { X, Y, Z, W };
@@ -105,9 +113,11 @@ namespace greaper::math
 		{
 			*this = GetNormalized(tolerance);
 		}
-		NODISCARD INLINE constexpr bool IsNearlyEqual(const Vector4Real& other, T tolerance = MATH_TOLERANCE<T>)const noexcept
+		NODISCARD INLINE constexpr bool IsNearlyEqual(const Vector4Real& other,
+			T tolerance = MATH_TOLERANCE<T>)const noexcept
 		{
-			return ::IsNearlyEqual(X, other.X, tolerance) && ::IsNearlyEqual(Y, other.Y, tolerance) && ::IsNearlyEqual(Z, other.Z, tolerance) && ::IsNearlyEqual(W, other.W, tolerance);
+			return ::IsNearlyEqual(X, other.X, tolerance) && ::IsNearlyEqual(Y, other.Y, tolerance)
+				&& ::IsNearlyEqual(Z, other.Z, tolerance) && ::IsNearlyEqual(W, other.W, tolerance);
 		}
 		NODISCARD INLINE constexpr bool IsEqual(const Vector4Real& other)const noexcept
 		{
@@ -135,7 +145,8 @@ namespace greaper::math
 		}
 		NODISCARD INLINE constexpr bool AreComponentsNearlyEqual(T tolerance = MATH_TOLERANCE<T>)const noexcept
 		{
-			return ::IsNearlyEqual(X, Y, tolerance) && ::IsNearlyEqual(X, Z, tolerance) && ::IsNearlyEqual(X, W, tolerance);
+			return ::IsNearlyEqual(X, Y, tolerance) && ::IsNearlyEqual(X, Z, tolerance)
+				&& ::IsNearlyEqual(X, W, tolerance);
 		}
 		NODISCARD INLINE constexpr Vector4Real GetAbs()const noexcept
 		{
@@ -181,11 +192,7 @@ namespace greaper::math
 		}
 		NODISCARD INLINE String ToString()const noexcept
 		{
-			return Format(Impl::Vec4Conv<T>::print, X, Y, Z, W);
-		}
-		INLINE void FromString(StringView str)noexcept
-		{
-			sscanf(str.data(), Impl::Vec4Conv<T>::scan, &X, &Y, &Z, &W);
+			return std::format("{}, {}, {}, {}", X, Y, Z, W);
 		}
 
 		static const Vector4Real ZERO;
@@ -195,37 +202,84 @@ namespace greaper::math
 	template<class T> inline const Vector4Real<T> Vector4Real<T>::ZERO = Vector4Real<T>{};
 	template<class T> inline const Vector4Real<T> Vector4Real<T>::UNIT = Vector4Real<T>((T)1, (T)1, (T)1, T(1));
 
-	template<class T> NODISCARD INLINE constexpr Vector4Real<T> operator+(const Vector4Real<T>& left, const Vector4Real<T>& right)noexcept { return Vector4Real<T>{ left.X + right.X, left.Y + right.Y, left.Z + right.Z, left.W + right.W }; }
-	template<class T> NODISCARD INLINE constexpr Vector4Real<T> operator-(const Vector4Real<T>& left, const Vector4Real<T>& right)noexcept { return Vector4Real<T>{ left.X - right.X, left.Y - right.Y, left.Z - right.Z, left.W - right.W }; }
-	template<class T> INLINE Vector4Real<T>& operator+=(Vector4Real<T>& left, const Vector4Real<T>& right)noexcept { left.X += right.X; left.Y += right.Y; left.Z += right.Z; left.W += right.W; return left; }
-	template<class T> INLINE Vector4Real<T>& operator-=(Vector4Real<T>& left, const Vector4Real<T>& right)noexcept { left.X -= right.X; left.Y -= right.Y; left.Z -= right.Z; left.W -= right.W; return left; }
+	template<class T> 
+	NODISCARD INLINE constexpr Vector4Real<T> operator+(const Vector4Real<T>& left, const Vector4Real<T>& right)noexcept 
+	{
+		return Vector4Real<T>{ left.X + right.X, left.Y + right.Y, left.Z + right.Z, left.W + right.W };
+	}
+	template<class T> 
+	NODISCARD INLINE constexpr Vector4Real<T> operator-(const Vector4Real<T>& left, const Vector4Real<T>& right)noexcept 
+	{
+		return Vector4Real<T>{ left.X - right.X, left.Y - right.Y, left.Z - right.Z, left.W - right.W };
+	}
+	template<class T> 
+	INLINE Vector4Real<T>& operator+=(Vector4Real<T>& left, const Vector4Real<T>& right)noexcept 
+	{
+		left.X += right.X; left.Y += right.Y; left.Z += right.Z; left.W += right.W; return left;
+	}
+	template<class T> 
+	INLINE Vector4Real<T>& operator-=(Vector4Real<T>& left, const Vector4Real<T>& right)noexcept 
+	{
+		left.X -= right.X; left.Y -= right.Y; left.Z -= right.Z; left.W -= right.W; return left;
+	}
 
-	template<class T> NODISCARD INLINE constexpr Vector4Real<T> operator*(const Vector4Real<T>& left, T right)noexcept { return Vector4Real<T>{ left.X * right, left.Y * right, left.Z * right, left.W * right }; }
-	template<class T> NODISCARD INLINE constexpr Vector4Real<T> operator/(const Vector4Real<T>& left, T right)noexcept { float invRight = T(1) / right; return Vector4Real<T>{ left.X * invRight, left.Y * invRight, left.Z * invRight, left.W * invRight }; }
-	template<class T> NODISCARD INLINE constexpr Vector4Real<T> operator*(T left, const Vector4Real<T>& right)noexcept { return Vector4Real<T>{ left * right.X, left * right.Y, left * right.Z, left * right.W }; }
-	template<class T> INLINE Vector4Real<T>& operator*=(Vector4Real<T>& left, T right)noexcept { left.X *= right; left.Y *= right; left.Z *= right; left.W *= right; return left; }
-	template<class T> INLINE Vector4Real<T>& operator/=(Vector4Real<T>& left, T right)noexcept { float invRight = T(1) / right; left.X *= invRight; left.Y *= invRight; left.Z *= invRight; left.W *= invRight; return left; }
+	template<class T> 
+	NODISCARD INLINE constexpr Vector4Real<T> operator*(const Vector4Real<T>& left, T right)noexcept 
+	{
+		return Vector4Real<T>{ left.X * right, left.Y * right, left.Z * right, left.W * right };
+	}
+	template<class T> 
+	NODISCARD INLINE constexpr Vector4Real<T> operator/(const Vector4Real<T>& left, T right)noexcept 
+	{
+		float invRight = T(1) / right;
+		return Vector4Real<T>{ left.X * invRight, left.Y * invRight, left.Z * invRight, left.W * invRight };
+	}
+	template<class T> 
+	NODISCARD INLINE constexpr Vector4Real<T> operator*(T left, const Vector4Real<T>& right)noexcept 
+	{
+		return Vector4Real<T>{ left * right.X, left * right.Y, left * right.Z, left * right.W };
+	}
+	template<class T> 
+	INLINE Vector4Real<T>& operator*=(Vector4Real<T>& left, T right)noexcept 
+	{
+		left.X *= right; left.Y *= right; left.Z *= right; left.W *= right; return left;
+	}
+	template<class T> 
+	INLINE Vector4Real<T>& operator/=(Vector4Real<T>& left, T right)noexcept 
+	{
+		float invRight = T(1) / right;
+		left.X *= invRight; left.Y *= invRight; left.Z *= invRight; left.W *= invRight; return left;
+	}
 
-	template<class T> NODISCARD INLINE constexpr bool operator==(const Vector4Real<T>& left, const Vector4Real<T>& right)noexcept { return left.IsNearlyEqual(right); }
-	template<class T> NODISCARD INLINE constexpr bool operator!=(const Vector4Real<T>& left, const Vector4Real<T>& right)noexcept { return !(left == right); }
+	template<class T> 
+	NODISCARD INLINE constexpr bool operator==(const Vector4Real<T>& left, const Vector4Real<T>& right)noexcept 
+	{
+		return left.IsNearlyEqual(right);
+	}
+	template<class T> 
+	NODISCARD INLINE constexpr bool operator!=(const Vector4Real<T>& left, const Vector4Real<T>& right)noexcept 
+	{
+		return !(left == right);
+	}
 }
 
-#define INSTANTIATE_VEC4R_UTILS(type)\
-template<> NODISCARD INLINE constexpr greaper::math::Vector4Real<type> Abs<greaper::math::Vector4Real<type>>(const greaper::math::Vector4Real<type> a)noexcept{\
-	return a.GetAbs();\
-}\
-template<> NODISCARD INLINE constexpr greaper::math::Vector4Real<type> Clamp<greaper::math::Vector4Real<type>>(const greaper::math::Vector4Real<type> a, const greaper::math::Vector4Real<type> min, const greaper::math::Vector4Real<type> max)noexcept{\
-	return a.GetClamped(min, max);\
-}\
-template<> NODISCARD INLINE constexpr greaper::math::Vector4Real<type> ClampZeroToOne<greaper::math::Vector4Real<type>>(const greaper::math::Vector4Real<type> a)noexcept{\
-	return a.GetClampledAxes(type(0), type(1));\
-}\
-template<> NODISCARD INLINE constexpr greaper::math::Vector4Real<type> ClampNegOneToOne<greaper::math::Vector4Real<type>>(const greaper::math::Vector4Real<type> a)noexcept{\
-	return a.GetClampledAxes(type(-1), type(1));\
-}\
-template<> NODISCARD INLINE constexpr greaper::math::Vector4Real<type> Sign<greaper::math::Vector4Real<type>>(const greaper::math::Vector4Real<type> a)noexcept{\
-	return a.GetSignVector();\
-}
+#define INSTANTIATE_VEC4R_UTILS(type)                                                                                  \
+template<>                                                                                                             \
+NODISCARD INLINE constexpr greaper::math::Vector4Real<type> Abs<greaper::math::Vector4Real<type>>                      \
+(const greaper::math::Vector4Real<type> a)noexcept{ return a.GetAbs(); }                                               \
+template<>                                                                                                             \
+NODISCARD INLINE constexpr greaper::math::Vector4Real<type> Clamp<greaper::math::Vector4Real<type>>                    \
+(const greaper::math::Vector4Real<type> a, const greaper::math::Vector4Real<type> min,                                 \
+	const greaper::math::Vector4Real<type> max)noexcept{\ return a.GetClamped(min, max); }                             \
+template<>                                                                                                             \
+NODISCARD INLINE constexpr greaper::math::Vector4Real<type> ClampZeroToOne<greaper::math::Vector4Real<type>>           \
+(const greaper::math::Vector4Real<type> a)noexcept{\ return a.GetClampledAxes(type(0), type(1)); }                     \
+template<>                                                                                                             \
+NODISCARD INLINE constexpr greaper::math::Vector4Real<type> ClampNegOneToOne<greaper::math::Vector4Real<type>>         \
+(const greaper::math::Vector4Real<type> a)noexcept{\ return a.GetClampledAxes(type(-1), type(1)); }                    \
+template<>                                                                                                             \
+NODISCARD INLINE constexpr greaper::math::Vector4Real<type> Sign<greaper::math::Vector4Real<type>>                     \
+(const greaper::math::Vector4Real<type> a)noexcept{\ return a.GetSignVector() ;}
 
 INSTANTIATE_VEC4R_UTILS(float);
 INSTANTIATE_VEC4R_UTILS(double);
@@ -244,5 +298,3 @@ namespace std
 		}
 	};
 }
-
-#endif /* MATH_VECTOR4REAL_H */

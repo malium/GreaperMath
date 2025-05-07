@@ -1,22 +1,17 @@
-/***********************************************************************************
-*   Copyright 2022 Marcos Sánchez Torrent.                                         *
-*   All Rights Reserved.                                                           *
-***********************************************************************************/
+/***********************************************************************************************************************
+ *                                   Copyright 2025 Marcos Sánchez Torrent (@malium)                                   *
+ *                                               All Rights Reserved                                                   *
+ **********************************************************************************************************************/
 
 #pragma once
-
-#ifndef MATH_VECTOR4UNSIGNED_H
-#define MATH_VECTOR4UNSIGNED_H 1
-
-#include "Vector3Unsigned.inl"
-#include "VecRef.h"
 
 namespace greaper::math
 {
 	template<class T>
 	class Vector4Unsigned
 	{
-		static_assert(std::is_integral_v<T> && std::is_unsigned_v<T>, "Vector4Unsigned can only work with float, double or long double types");
+		static_assert(std::is_integral_v<T> && std::is_unsigned_v<T>,
+			"Vector4Unsigned can only work with float, double or long double types");
 
 	public:
 		static constexpr sizet ComponentCount = 4;
@@ -29,22 +24,37 @@ namespace greaper::math
 
 		constexpr Vector4Unsigned()noexcept = default;
 		INLINE constexpr Vector4Unsigned(T x, T y, T z, T w)noexcept :X(x), Y(y), Z(z), W(w) {  }
-		INLINE constexpr explicit Vector4Unsigned(const std::array<T, ComponentCount>& arr) : X(arr[0]), Y(arr[1]), Z(arr[2]), W(arr[3]) {  }
-		INLINE constexpr explicit Vector4Unsigned(const Vector2Unsigned<T>& v2, T z, T w)noexcept :X(v2.X), Y(v2.Y), Z(z), W(w) {  }
-		INLINE constexpr explicit Vector4Unsigned(const Vector2Unsigned<T>& v20, const Vector2Unsigned<T>& v21)noexcept :X(v20.X), Y(v20.Y), Z(v21.X), W(v21.Y) {  }
-		INLINE constexpr explicit Vector4Unsigned(const Vector3Unsigned<T>& v3, T w)noexcept :X(v3.X), Y(v3.Y), Z(v3.Z), W(w) {  }
+		INLINE constexpr explicit Vector4Unsigned(const std::array<T, ComponentCount>& arr)
+			:X(arr[0]), Y(arr[1]), Z(arr[2]), W(arr[3]) {  }
+		INLINE constexpr explicit Vector4Unsigned(const Vector2Unsigned<T>& v2, T z, T w)noexcept
+			:X(v2.X), Y(v2.Y), Z(z), W(w) {  }
+		INLINE constexpr explicit Vector4Unsigned(const Vector2Unsigned<T>& v20, const Vector2Unsigned<T>& v21)noexcept
+			:X(v20.X), Y(v20.Y), Z(v21.X), W(v21.Y) {  }
+		INLINE constexpr explicit Vector4Unsigned(const Vector3Unsigned<T>& v3, T w)noexcept
+			:X(v3.X), Y(v3.Y), Z(v3.Z), W(w) {  }
+
+		NODISCARD INLINE explicit operator value_type*() noexcept
+		{
+			return reinterpret_cast<value_type*>(this);
+		}
+
+		NODISCARD INLINE explicit operator const value_type*()const noexcept
+		{
+			return reinterpret_cast<const value_type*>(this);
+		}
 
 		NODISCARD INLINE constexpr T& operator[](sizet index)noexcept
 		{
-			VerifyLess(index, ComponentCount, "Trying to access a Vector4, but the index %" PRIuPTR " was out of range.", index);
+			VerifyLess(index, ComponentCount, std::format(                                                             \
+				"Trying to access a Vector4, but the index {} was out of range.", index));
 			return (&X)[index];
 		}
 		NODISCARD INLINE constexpr const T& operator[](sizet index)const noexcept
 		{
-			VerifyLess(index, ComponentCount, "Trying to access a Vector4, but the index %" PRIuPTR " was out of range.", index);
+			VerifyLess(index, ComponentCount, std::format(                                                             \
+				"Trying to access a Vector4, but the index {} was out of range.", index));
 			return (&X)[index];
 		}
-		DEF_SWIZZLE_VEC4();
 		NODISCARD INLINE constexpr std::array<T, ComponentCount> ToArray()const noexcept
 		{
 			return { X, Y, Z, W };
@@ -99,7 +109,8 @@ namespace greaper::math
 				::Clamp(W, minAxeVal, maxAxeVal)
 			};
 		}
-		NODISCARD INLINE constexpr Vector4Unsigned GetClamped(const Vector4Unsigned& min, const Vector4Unsigned& max)const noexcept
+		NODISCARD INLINE constexpr Vector4Unsigned GetClamped(const Vector4Unsigned& min,
+															const Vector4Unsigned& max)const noexcept
 		{
 			return Vector4Unsigned{
 				::Clamp(X, min.X, max.X),
@@ -110,39 +121,84 @@ namespace greaper::math
 		}
 		NODISCARD INLINE String ToString()const noexcept
 		{
-			return Format(Impl::Vec4Conv<T>::print, X, Y, Z, W);
-		}
-		INLINE void FromString(StringView str)noexcept
-		{
-			sscanf(str.data(), Impl::Vec4Conv<T>::scan, &X, &Y, &Z, &W);
+			return std::format("{}, {}, {}, {}", X, Y, Z, W);
 		}
 
 		static const Vector4Unsigned ZERO;
 		static const Vector4Unsigned UNIT;
 	};
 
-	template<class T> inline const Vector4Unsigned<T> Vector4Unsigned<T>::ZERO = Vector4Unsigned<T>{};
-	template<class T> inline const Vector4Unsigned<T> Vector4Unsigned<T>::UNIT = Vector4Unsigned<T>((T)1, (T)1, (T)1, T(1));
+	template<class T>
+	inline const Vector4Unsigned<T> Vector4Unsigned<T>::ZERO = Vector4Unsigned<T>{};
+	template<class T>
+	inline const Vector4Unsigned<T> Vector4Unsigned<T>::UNIT = Vector4Unsigned<T>((T)1, (T)1, (T)1, T(1));
 
-	template<class T> NODISCARD INLINE constexpr Vector4Unsigned<T> operator+(const Vector4Unsigned<T>& left, const Vector4Unsigned<T>& right)noexcept { return Vector4Unsigned<T>{ left.X + right.X, left.Y + right.Y, left.Z + right.Z, left.W + right.W }; }
-	template<class T> NODISCARD INLINE constexpr Vector4Unsigned<T> operator-(const Vector4Unsigned<T>& left, const Vector4Unsigned<T>& right)noexcept { return Vector4Unsigned<T>{ left.X - right.X, left.Y - right.Y, left.Z - right.Z, left.W - right.W }; }
-	template<class T> INLINE Vector4Unsigned<T>& operator+=(Vector4Unsigned<T>& left, const Vector4Unsigned<T>& right)noexcept { left.X += right.X; left.Y += right.Y; left.Z += right.Z; left.W += right.W; return left; }
-	template<class T> INLINE Vector4Unsigned<T>& operator-=(Vector4Unsigned<T>& left, const Vector4Unsigned<T>& right)noexcept { left.X -= right.X; left.Y -= right.Y; left.Z -= right.Z; left.W -= right.W; return left; }
+	template<class T>
+	NODISCARD INLINE constexpr Vector4Unsigned<T> operator+(const Vector4Unsigned<T>& left,
+															const Vector4Unsigned<T>& right)noexcept
+	{
+		return Vector4Unsigned<T>{ left.X + right.X, left.Y + right.Y, left.Z + right.Z, left.W + right.W };
+	}
+	template<class T>
+	NODISCARD INLINE constexpr Vector4Unsigned<T> operator-(const Vector4Unsigned<T>& left,
+															const Vector4Unsigned<T>& right)noexcept
+	{
+		return Vector4Unsigned<T>{ left.X - right.X, left.Y - right.Y, left.Z - right.Z, left.W - right.W };
+	}
+	template<class T>
+	INLINE Vector4Unsigned<T>& operator+=(Vector4Unsigned<T>& left, const Vector4Unsigned<T>& right)noexcept
+	{
+		left.X += right.X; left.Y += right.Y; left.Z += right.Z; left.W += right.W; return left;
+	}
+	template<class T>
+	INLINE Vector4Unsigned<T>& operator-=(Vector4Unsigned<T>& left, const Vector4Unsigned<T>& right)noexcept
+	{
+		left.X -= right.X; left.Y -= right.Y; left.Z -= right.Z; left.W -= right.W; return left;
+	}
 
-	template<class T> NODISCARD INLINE constexpr Vector4Unsigned<T> operator*(const Vector4Unsigned<T>& left, T right)noexcept { return Vector4Unsigned<T>{ left.X* right, left.Y* right, left.Z* right, left.W* right }; }
-	template<class T> NODISCARD INLINE constexpr Vector4Unsigned<T> operator/(const Vector4Unsigned<T>& left, T right)noexcept { return Vector4Unsigned<T>{ left.X / right, left.Y* right, left.Z* right, left.W* right }; }
-	template<class T> NODISCARD INLINE constexpr Vector4Unsigned<T> operator*(T left, const Vector4Unsigned<T>& right)noexcept { return Vector4Unsigned<T>{ left* right.X, left* right.Y, left* right.Z, left* right.W }; }
-	template<class T> INLINE Vector4Unsigned<T>& operator*=(Vector4Unsigned<T>& left, T right)noexcept { left.X *= right; left.Y *= right; left.Z *= right; left.W *= right; return left; }
-	template<class T> INLINE Vector4Unsigned<T>& operator/=(Vector4Unsigned<T>& left, T right)noexcept { left.X *= right; left.Y *= right; left.Z *= right; left.W *= right; return left; }
+	template<class T>
+	NODISCARD INLINE constexpr Vector4Unsigned<T> operator*(const Vector4Unsigned<T>& left, T right)noexcept
+	{
+		return Vector4Unsigned<T>{ left.X* right, left.Y* right, left.Z* right, left.W* right };
+	}
+	template<class T>
+	NODISCARD INLINE constexpr Vector4Unsigned<T> operator/(const Vector4Unsigned<T>& left, T right)noexcept
+	{
+		return Vector4Unsigned<T>{ left.X / right, left.Y* right, left.Z* right, left.W* right };
+	}
+	template<class T>
+	NODISCARD INLINE constexpr Vector4Unsigned<T> operator*(T left, const Vector4Unsigned<T>& right)noexcept
+	{
+		return Vector4Unsigned<T>{ left* right.X, left* right.Y, left* right.Z, left* right.W };
+	}
+	template<class T>
+	INLINE Vector4Unsigned<T>& operator*=(Vector4Unsigned<T>& left, T right)noexcept
+	{
+		left.X *= right; left.Y *= right; left.Z *= right; left.W *= right; return left;
+	}
+	template<class T>
+	INLINE Vector4Unsigned<T>& operator/=(Vector4Unsigned<T>& left, T right)noexcept
+	{
+		left.X *= right; left.Y *= right; left.Z *= right; left.W *= right; return left;
+	}
 
-	template<class T> NODISCARD INLINE constexpr bool operator==(const Vector4Unsigned<T>& left, const Vector4Unsigned<T>& right)noexcept { return left.IsEqual(right); }
-	template<class T> NODISCARD INLINE constexpr bool operator!=(const Vector4Unsigned<T>& left, const Vector4Unsigned<T>& right)noexcept { return !(left == right); }
+	template<class T>
+	NODISCARD INLINE constexpr bool operator==(const Vector4Unsigned<T>& left, const Vector4Unsigned<T>& right)noexcept
+	{
+		return left.IsEqual(right);
+	}
+	template<class T>
+	NODISCARD INLINE constexpr bool operator!=(const Vector4Unsigned<T>& left, const Vector4Unsigned<T>& right)noexcept
+	{
+		return !(left == right);
+	}
 }
 
-#define INSTANTIATE_VEC4U_UTILS(type)\
-template<> NODISCARD INLINE constexpr greaper::math::Vector4Unsigned<type> Clamp<greaper::math::Vector4Unsigned<type>>(const greaper::math::Vector4Unsigned<type> a, const greaper::math::Vector4Unsigned<type> min, const greaper::math::Vector4Unsigned<type> max)noexcept{\
-	return a.GetClamped(min, max);\
-}
+#define INSTANTIATE_VEC4U_UTILS(type)                                                                                  \
+template<>                                                                                                             \
+NODISCARD INLINE constexpr greaper::math::Vector4Unsigned<type> Clamp<greaper::math::Vector4Unsigned<type>>            \
+(const greaper::math::Vector4Unsigned<type> a, const greaper::math::Vector4Unsigned<type> min,                         \
+	const greaper::math::Vector4Unsigned<type> max)noexcept{ return a.GetClamped(min, max); }                          
 
 INSTANTIATE_VEC4U_UTILS(uint8);
 INSTANTIATE_VEC4U_UTILS(uint16);
@@ -162,5 +218,3 @@ namespace std
 		}
 	};
 }
-
-#endif /* MATH_VECTOR4UNSIGNED_H */
