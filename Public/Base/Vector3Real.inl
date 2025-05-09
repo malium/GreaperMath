@@ -37,13 +37,13 @@ namespace greaper::math
 			return reinterpret_cast<const value_type*>(this);
 		}
 
-		NODISCARD INLINE constexpr T& operator[](sizet index)noexcept
+		NODISCARD INLINE constexpr T& operator[](sizet index)
 		{
 			VerifyLess(index, ComponentCount, std::format(                                                             \
 				"Trying to access a Vector3, but the index {} was out of range.", index));
 			return (&X)[index];
 		}
-		NODISCARD INLINE constexpr const T& operator[](sizet index)const noexcept
+		NODISCARD INLINE constexpr const T& operator[](sizet index)const
 		{
 			VerifyLess(index, ComponentCount, std::format(                                                             \
 				"Trying to access a Vector3, but the index {} was out of range.", index));
@@ -185,11 +185,7 @@ namespace greaper::math
 		}
 		NODISCARD INLINE String ToString()const noexcept
 		{
-			return Format(Impl::Vec3Conv<T>::print, X, Y, Z);
-		}
-		INLINE void FromString(StringView str)noexcept
-		{
-			sscanf(str.data(), Impl::Vec3Conv<T>::scan, &X, &Y, &Z);
+			return std::format("{}, {}, {}", X, Y, Z);
 		}
 
 		static const Vector3Real ZERO;

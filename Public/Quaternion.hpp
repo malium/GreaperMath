@@ -49,13 +49,13 @@ namespace greaper::math
 			return reinterpret_cast<const value_type*>(this);
 		}
 
-		NODISCARD INLINE constexpr T& operator[](sizet index)noexcept
+		NODISCARD INLINE constexpr T& operator[](sizet index)
 		{
 			VerifyLess(index, ComponentCount, std::format(                                                             \
 				"Trying to access a Quaternion, but the index {} was out of range.", index));
 			return (&W)[index];
 		}
-		NODISCARD INLINE constexpr const T& operator[](sizet index)const noexcept
+		NODISCARD INLINE constexpr const T& operator[](sizet index)const
 		{
 			VerifyLess(index, ComponentCount, std::format(                                                             \
 				"Trying to access a Quaternion, but the index {} was out of range.", index));

@@ -39,19 +39,19 @@ namespace greaper::math
 			return reinterpret_cast<const value_type*>(this);
 		}
 
-		NODISCARD INLINE constexpr bool& operator[](sizet index)noexcept
+		NODISCARD INLINE constexpr bool& operator[](sizet index)
 		{
 			VerifyLess(index, ComponentCount, std::format(                                                             \
 				"Trying to access a Vector4, but the index {} was out of range.", index));
 			return (&X)[index];
 		}
-		NODISCARD INLINE constexpr const bool& operator[](sizet index)const noexcept
+		NODISCARD INLINE constexpr const bool& operator[](sizet index)const
 		{
 			VerifyLess(index, ComponentCount, std::format(                                                             \
 				"Trying to access a Vector4, but the index {} was out of range.", index));
 			return (&X)[index];
 		}
-		DEF_SWIZZLE_VEC4();
+		
 		NODISCARD INLINE constexpr std::array<bool, ComponentCount> ToArray()const noexcept
 		{
 			return { X, Y, Z, W };

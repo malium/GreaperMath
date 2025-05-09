@@ -260,6 +260,7 @@ namespace std
 }
 
 #if MATH_USE_GREAPER_REFLECTION
+#include "../../GreaperCore/Public/Reflection/ComplexType.hpp"
 #define CreateRectRefl(recttype)\
 namespace greaper{template<>                                                                                           \
 const Vector<std::shared_ptr<refl::IField>> refl::ComplexType<recttype>::Fields = {                                    \

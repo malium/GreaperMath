@@ -8,7 +8,7 @@
 #ifndef MATH_VECTOR4_HPP
 #define MATH_VECTOR4_HPP 1
 
-#include "MathPrerequisites.hpp"
+#include "Vector3.hpp"
 
 #include "Base/Vector4Real.inl"
 #include "Base/Vector4Signed.inl"
@@ -27,7 +27,5 @@ ReflectAsContainer(greaper::math::Vector4u8, 	greaper::refl::RTI_Vector4u8);
 ReflectAsContainer(greaper::math::Vector4u16, 	greaper::refl::RTI_Vector4u16);
 ReflectAsContainer(greaper::math::Vector4u64, 	greaper::refl::RTI_Vector4u64);
 ReflectAsContainer(greaper::math::Vector4b, 	greaper::refl::RTI_Vector4b);
-
-#endif
 
 #endif /* MATH_VECTOR4_HPP */

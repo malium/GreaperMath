@@ -107,14 +107,14 @@ namespace greaper::refl
 				sizeof(data), size));
 		}
 		
-		static std::expected<cJSON*, String> ToJSON(const math::Half& data, cJSON* json, StringView name)
+		static std::expected<cJSON*, String> ToJSON_Item(const math::Half& data)
 		{
-			return PlainType<float>::ToJSON(data.Get(), json, name);
+			return PlainType<float>::ToJSON_Item(data.Get());
 		}
-		static std::expected<void, String> FromJSON(math::Half& data, cJSON* json, StringView name)
+		static std::expected<void, String> FromJSON_Item(math::Half& data, cJSON* json)
 		{
 			float temp;
-			auto res = PlainType<float>::FromJSON(temp, json, name);
+			auto res = PlainType<float>::FromJSON_Item(temp, json);
 			if(!res.has_value())
 				return res;
 			data.Set(temp);

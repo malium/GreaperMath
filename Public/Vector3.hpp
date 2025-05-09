@@ -8,7 +8,7 @@
 #ifndef MATH_VECTOR3_HPP
 #define MATH_VECTOR3_HPP 1
 
-#include "MathPrerequisites.hpp"
+#include "Vector2.hpp"
 
 #include "Base/Vector3Real.inl"
 #include "Base/Vector3Signed.inl"

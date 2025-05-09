@@ -41,13 +41,13 @@ namespace greaper::math
 			return reinterpret_cast<const value_type*>(this);
 		}
 
-		NODISCARD INLINE constexpr T& operator[](sizet index)noexcept
+		NODISCARD INLINE constexpr T& operator[](sizet index)
 		{
 			VerifyLess(index, ComponentCount, std::format(                                                             \
 				"Trying to access a Vector4, but the index {} was out of range.", index));
 			return (&X)[index];
 		}
-		NODISCARD INLINE constexpr const T& operator[](sizet index)const noexcept
+		NODISCARD INLINE constexpr const T& operator[](sizet index)const
 		{
 			VerifyLess(index, ComponentCount, std::format(                                                             \
 				"Trying to access a Vector4, but the index {} was out of range.", index));
@@ -270,16 +270,16 @@ NODISCARD INLINE constexpr greaper::math::Vector4Real<type> Abs<greaper::math::V
 template<>                                                                                                             \
 NODISCARD INLINE constexpr greaper::math::Vector4Real<type> Clamp<greaper::math::Vector4Real<type>>                    \
 (const greaper::math::Vector4Real<type> a, const greaper::math::Vector4Real<type> min,                                 \
-	const greaper::math::Vector4Real<type> max)noexcept{\ return a.GetClamped(min, max); }                             \
+	const greaper::math::Vector4Real<type> max)noexcept{ return a.GetClamped(min, max); }                              \
 template<>                                                                                                             \
 NODISCARD INLINE constexpr greaper::math::Vector4Real<type> ClampZeroToOne<greaper::math::Vector4Real<type>>           \
-(const greaper::math::Vector4Real<type> a)noexcept{\ return a.GetClampledAxes(type(0), type(1)); }                     \
+(const greaper::math::Vector4Real<type> a)noexcept{ return a.GetClampledAxes(type(0), type(1)); }                      \
 template<>                                                                                                             \
 NODISCARD INLINE constexpr greaper::math::Vector4Real<type> ClampNegOneToOne<greaper::math::Vector4Real<type>>         \
-(const greaper::math::Vector4Real<type> a)noexcept{\ return a.GetClampledAxes(type(-1), type(1)); }                    \
+(const greaper::math::Vector4Real<type> a)noexcept{ return a.GetClampledAxes(type(-1), type(1)); }                     \
 template<>                                                                                                             \
 NODISCARD INLINE constexpr greaper::math::Vector4Real<type> Sign<greaper::math::Vector4Real<type>>                     \
-(const greaper::math::Vector4Real<type> a)noexcept{\ return a.GetSignVector() ;}
+(const greaper::math::Vector4Real<type> a)noexcept{ return a.GetSignVector() ;}
 
 INSTANTIATE_VEC4R_UTILS(float);
 INSTANTIATE_VEC4R_UTILS(double);

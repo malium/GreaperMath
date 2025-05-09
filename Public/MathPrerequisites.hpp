@@ -113,24 +113,24 @@ namespace greaper::math
 	class Half;
 }
 
-namespace greaper
-{
-	using PropertyVector2f = TProperty<math::Vector2f>;
-	using PropertyVector2i = TProperty<math::Vector2i>;
-	using PropertyVector2u = TProperty<math::Vector2u>;
-
-	using PropertyVector3f = TProperty<math::Vector3f>;
-	using PropertyVector3i = TProperty<math::Vector3i>;
-	using PropertyVector3u = TProperty<math::Vector3u>;
-
-	using PropertyVector4f = TProperty<math::Vector4f>;
-	using PropertyVector4i = TProperty<math::Vector4i>;
-	using PropertyVector4u = TProperty<math::Vector4u>;
-
-	using PropertyRectF = TProperty<math::RectF>;
-	using PropertyRectI = TProperty<math::RectI>;
-	using PropertyRectU = TProperty<math::RectU>;
-}
+//namespace greaper
+//{
+//	using PropertyVector2f = TProperty<math::Vector2f>;
+//	using PropertyVector2i = TProperty<math::Vector2i>;
+//	using PropertyVector2u = TProperty<math::Vector2u>;
+//
+//	using PropertyVector3f = TProperty<math::Vector3f>;
+//	using PropertyVector3i = TProperty<math::Vector3i>;
+//	using PropertyVector3u = TProperty<math::Vector3u>;
+//
+//	using PropertyVector4f = TProperty<math::Vector4f>;
+//	using PropertyVector4i = TProperty<math::Vector4i>;
+//	using PropertyVector4u = TProperty<math::Vector4u>;
+//
+//	using PropertyRectF = TProperty<math::RectF>;
+//	using PropertyRectI = TProperty<math::RectI>;
+//	using PropertyRectU = TProperty<math::RectU>;
+//}
 
 namespace greaper::refl
 {
@@ -187,15 +187,23 @@ namespace greaper::refl
 
 		RTI_Segment2f,
 		RTI_Segment2d,
+		RTI_Segment2i,
+		RTI_Segment2u,
 
 		RTI_Segment3f,
 		RTI_Segment3d,
+		RTI_Segment3i,
+		RTI_Segment3u,
 
 		RTI_Line2f,
 		RTI_Line2d,
+		RTI_Line2i,
+		RTI_Line2u,
 
 		RTI_Line3f,
 		RTI_Line3d,
+		RTI_Line3i,
+		RTI_Line3u,
 
 		RTI_Half,
 
@@ -207,41 +215,41 @@ namespace greaper::refl
 }
 
 CREATE_TYPEINFO_CNAME(greaper::math::Half, 			greaper::refl::RTI_Half,		PlainType, "Half");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector2f,		greaper::refl::RTI_Vector2f,	ComplexType, "Vector2f");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector2d,		greaper::refl::RTI_Vector2d,	ComplexType, "Vector2d");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector2i,		greaper::refl::RTI_Vector2i,	ComplexType, "Vector2i");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector2i8,		greaper::refl::RTI_Vector2i8,	ComplexType, "Vector2i8");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector2i16,	greaper::refl::RTI_Vector2i16,	ComplexType, "Vector2i16");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector2i64,	greaper::refl::RTI_Vector2i64,	ComplexType, "Vector2i64");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector2u,		greaper::refl::RTI_Vector2u,	ComplexType, "Vector2u");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector2u8,		greaper::refl::RTI_Vector2u8,	ComplexType, "Vector2u8");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector2u16,	greaper::refl::RTI_Vector2u16,	ComplexType, "Vector2u16");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector2u64,	greaper::refl::RTI_Vector2u64,	ComplexType, "Vector2u64");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector2b,		greaper::refl::RTI_Vector2b,	ComplexType, "Vector2b");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector2f,		greaper::refl::RTI_Vector2f,	ContainerType, "Vector2f");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector2d,		greaper::refl::RTI_Vector2d,	ContainerType, "Vector2d");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector2i,		greaper::refl::RTI_Vector2i,	ContainerType, "Vector2i");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector2i8,		greaper::refl::RTI_Vector2i8,	ContainerType, "Vector2i8");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector2i16,	greaper::refl::RTI_Vector2i16,	ContainerType, "Vector2i16");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector2i64,	greaper::refl::RTI_Vector2i64,	ContainerType, "Vector2i64");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector2u,		greaper::refl::RTI_Vector2u,	ContainerType, "Vector2u");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector2u8,		greaper::refl::RTI_Vector2u8,	ContainerType, "Vector2u8");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector2u16,	greaper::refl::RTI_Vector2u16,	ContainerType, "Vector2u16");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector2u64,	greaper::refl::RTI_Vector2u64,	ContainerType, "Vector2u64");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector2b,		greaper::refl::RTI_Vector2b,	ContainerType, "Vector2b");
 
-CREATE_TYPEINFO_CNAME(greaper::math::Vector3f,		greaper::refl::RTI_Vector3f,	ComplexType, "Vector3f");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector3d,		greaper::refl::RTI_Vector3d,	ComplexType, "Vector3d");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector3i,		greaper::refl::RTI_Vector3i,	ComplexType, "Vector3i");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector3i8,		greaper::refl::RTI_Vector3i8,	ComplexType, "Vector3i8");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector3i16,	greaper::refl::RTI_Vector3i16,	ComplexType, "Vector3i16");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector3i64,	greaper::refl::RTI_Vector3i64,	ComplexType, "Vector3i64");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector3u,		greaper::refl::RTI_Vector3u,	ComplexType, "Vector3u");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector3u8,		greaper::refl::RTI_Vector3u8,	ComplexType, "Vector3u8");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector3u16,	greaper::refl::RTI_Vector3u16,	ComplexType, "Vector3u16");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector3u64,	greaper::refl::RTI_Vector3u64,	ComplexType, "Vector3u64");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector3b,		greaper::refl::RTI_Vector3b,	ComplexType, "Vector3b");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector3f,		greaper::refl::RTI_Vector3f,	ContainerType, "Vector3f");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector3d,		greaper::refl::RTI_Vector3d,	ContainerType, "Vector3d");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector3i,		greaper::refl::RTI_Vector3i,	ContainerType, "Vector3i");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector3i8,		greaper::refl::RTI_Vector3i8,	ContainerType, "Vector3i8");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector3i16,	greaper::refl::RTI_Vector3i16,	ContainerType, "Vector3i16");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector3i64,	greaper::refl::RTI_Vector3i64,	ContainerType, "Vector3i64");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector3u,		greaper::refl::RTI_Vector3u,	ContainerType, "Vector3u");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector3u8,		greaper::refl::RTI_Vector3u8,	ContainerType, "Vector3u8");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector3u16,	greaper::refl::RTI_Vector3u16,	ContainerType, "Vector3u16");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector3u64,	greaper::refl::RTI_Vector3u64,	ContainerType, "Vector3u64");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector3b,		greaper::refl::RTI_Vector3b,	ContainerType, "Vector3b");
 
-CREATE_TYPEINFO_CNAME(greaper::math::Vector4f,		greaper::refl::RTI_Vector4f,	ComplexType, "Vector4f");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector4d,		greaper::refl::RTI_Vector4d,	ComplexType, "Vector4d");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector4i,		greaper::refl::RTI_Vector4i,	ComplexType, "Vector4i");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector4i8,		greaper::refl::RTI_Vector4i8,	ComplexType, "Vector4i8");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector4i16,	greaper::refl::RTI_Vector4i16,	ComplexType, "Vector4i16");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector4i64,	greaper::refl::RTI_Vector4i64,	ComplexType, "Vector4i64");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector4u,		greaper::refl::RTI_Vector4u,	ComplexType, "Vector4u");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector4u8,		greaper::refl::RTI_Vector4u8,	ComplexType, "Vector4u8");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector4u16,	greaper::refl::RTI_Vector4u16,	ComplexType, "Vector4u16");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector4u64,	greaper::refl::RTI_Vector4u64,	ComplexType, "Vector4u64");
-CREATE_TYPEINFO_CNAME(greaper::math::Vector4b,		greaper::refl::RTI_Vector4b,	ComplexType, "Vector4b");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector4f,		greaper::refl::RTI_Vector4f,	ContainerType, "Vector4f");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector4d,		greaper::refl::RTI_Vector4d,	ContainerType, "Vector4d");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector4i,		greaper::refl::RTI_Vector4i,	ContainerType, "Vector4i");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector4i8,		greaper::refl::RTI_Vector4i8,	ContainerType, "Vector4i8");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector4i16,	greaper::refl::RTI_Vector4i16,	ContainerType, "Vector4i16");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector4i64,	greaper::refl::RTI_Vector4i64,	ContainerType, "Vector4i64");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector4u,		greaper::refl::RTI_Vector4u,	ContainerType, "Vector4u");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector4u8,		greaper::refl::RTI_Vector4u8,	ContainerType, "Vector4u8");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector4u16,	greaper::refl::RTI_Vector4u16,	ContainerType, "Vector4u16");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector4u64,	greaper::refl::RTI_Vector4u64,	ContainerType, "Vector4u64");
+CREATE_TYPEINFO_CNAME(greaper::math::Vector4b,		greaper::refl::RTI_Vector4b,	ContainerType, "Vector4b");
 
 CREATE_TYPEINFO_CNAME(greaper::math::Matrix2f,		greaper::refl::RTI_Matrix2f,	ContainerType, "Matrix2f");
 CREATE_TYPEINFO_CNAME(greaper::math::Matrix2d,		greaper::refl::RTI_Matrix2d,	ContainerType, "Matrix2d");
@@ -252,8 +260,28 @@ CREATE_TYPEINFO_CNAME(greaper::math::Matrix3d,		greaper::refl::RTI_Matrix3d,	Con
 CREATE_TYPEINFO_CNAME(greaper::math::Matrix4f,		greaper::refl::RTI_Matrix4f,	ContainerType, "Matrix4f");
 CREATE_TYPEINFO_CNAME(greaper::math::Matrix4d,		greaper::refl::RTI_Matrix4d,	ContainerType, "Matrix4d");
 
-CREATE_TYPEINFO_CNAME(greaper::math::QuaternionF, 	greaper::refl::RTI_QuaternionF, ComplexType, "QuaternionF");
-CREATE_TYPEINFO_CNAME(greaper::math::QuaternionD, 	greaper::refl::RTI_QuaternionD, ComplexType, "QuaternionD");
+CREATE_TYPEINFO_CNAME(greaper::math::QuaternionF, 	greaper::refl::RTI_QuaternionF, ContainerType, "QuaternionF");
+CREATE_TYPEINFO_CNAME(greaper::math::QuaternionD, 	greaper::refl::RTI_QuaternionD, ContainerType, "QuaternionD");
+
+CREATE_TYPEINFO_CNAME(greaper::math::Segment2f, greaper::refl::RTI_Segment2f, ComplexType, "Segment2f");
+CREATE_TYPEINFO_CNAME(greaper::math::Segment2d, greaper::refl::RTI_Segment2d, ComplexType, "Segment2d");
+CREATE_TYPEINFO_CNAME(greaper::math::Segment2i, greaper::refl::RTI_Segment2i, ComplexType, "Segment2i");
+CREATE_TYPEINFO_CNAME(greaper::math::Segment2u, greaper::refl::RTI_Segment2u, ComplexType, "Segment2u");
+
+CREATE_TYPEINFO_CNAME(greaper::math::Segment3f, greaper::refl::RTI_Segment3f, ComplexType, "Segment3f");
+CREATE_TYPEINFO_CNAME(greaper::math::Segment3d, greaper::refl::RTI_Segment3d, ComplexType, "Segment3d");
+CREATE_TYPEINFO_CNAME(greaper::math::Segment3i, greaper::refl::RTI_Segment3i, ComplexType, "Segment3i");
+CREATE_TYPEINFO_CNAME(greaper::math::Segment3u, greaper::refl::RTI_Segment3u, ComplexType, "Segment3u");
+
+CREATE_TYPEINFO_CNAME(greaper::math::Line2f, greaper::refl::RTI_Line2f, ComplexType, "Line2f");
+CREATE_TYPEINFO_CNAME(greaper::math::Line2d, greaper::refl::RTI_Line2d, ComplexType, "Line2d");
+CREATE_TYPEINFO_CNAME(greaper::math::Line2i, greaper::refl::RTI_Line2i, ComplexType, "Line2i");
+CREATE_TYPEINFO_CNAME(greaper::math::Line2u, greaper::refl::RTI_Line2u, ComplexType, "Line2u");
+
+CREATE_TYPEINFO_CNAME(greaper::math::Line3f, greaper::refl::RTI_Line3f, ComplexType, "Line3f");
+CREATE_TYPEINFO_CNAME(greaper::math::Line3d, greaper::refl::RTI_Line3d, ComplexType, "Line3d");
+CREATE_TYPEINFO_CNAME(greaper::math::Line3i, greaper::refl::RTI_Line3i, ComplexType, "Line3i");
+CREATE_TYPEINFO_CNAME(greaper::math::Line3u, greaper::refl::RTI_Line3u, ComplexType, "Line3u");
 
 CREATE_TYPEINFO_CNAME(greaper::math::RectF, greaper::refl::RTI_RectF, ComplexType, "RectF");
 CREATE_TYPEINFO_CNAME(greaper::math::RectD, greaper::refl::RTI_RectD, ComplexType, "RectD");

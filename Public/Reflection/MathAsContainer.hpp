@@ -8,11 +8,12 @@
 #define MATH_REFLECTION_MATH_AS_CONTAINER_HPP 1
 
 #if MATH_USE_GREAPER_REFLECTION
-#include "../../GreaperCore/Public/Reflection/ContainerType.hpp"
+#include "../../../GreaperCore/Public/Reflection/PlainType.hpp"
+#include "../../../GreaperCore/Public/Reflection/ContainerType.hpp"
 
 #define ReflectAsContainer(type, rti)                                                                                  \
 namespace greaper::refl{                                                                                               \
-template<class T>                                                                                                      \
+template<>                                                                                                             \
 struct ContainerType<type> : public BaseType<type>{                                                                    \
 using Type = type;                                                                                                     \
 using ArrayValueType = typename Type::value_type;                                                                      \
@@ -25,30 +26,32 @@ static inline constexpr TypeCategory_t Category = TypeCategory_t::Container;    
 REFL_CREATE_METHODS(type);                                                                                             \
 static std::expected<ReflectedSize_t, String> ToStream(const Type& data, IStream& stream) {                            \
 	ReflectedSize_t size = 0;                                                                                          \
-	size += stream.Write(data.data(), StaticSize);                                                                     \
+	size += stream.Write((const ArrayValueType*)data, StaticSize);                                                     \
 	if (size == StaticSize)                                                                                            \
 		return size;                                                                                                   \
 	return std::unexpected(std::format("[refl::ContainerType<"#type">::ToStream] "                                     \
 		"Failure while writing to stream, not all data was written, expected:{} obtained:{}.",                         \
-		expectedSize, size)); }                                                                                        \
+		StaticSize, size)); }                                                                                          \
 static std::expected<ReflectedSize_t, String> FromStream(Type& data, IStream& stream) {                                \
 	ReflectedSize_t size = 0;                                                                                          \
-	size += stream.Read(data.data(), StaticSize);                                                                      \
+	size += stream.Read((ArrayValueType*)data, StaticSize);                                                            \
 	if (size == StaticSize)                                                                                            \
 		return size;                                                                                                   \
 	return std::unexpected(std::format("[refl::ContainerType<"#type">::FromStream] "                                   \
 		"Failure while reading from stream, not all data was read, expected:{} obtained:{}.",                          \
-		expectedSize, size)); }                                                                                        \
+		StaticSize, size)); }                                                                                          \
 static std::expected<cJSON*, String> ToJSON_Item(const Type& data) {                                                   \
 	cJSON* arrayObject = cJSON_CreateArray();                                                                          \
 	for (sizet i = 0; i < Type::ComponentCount; ++i) {                                                                 \
 		auto res = ValueCat::ToJSON_Item(data[i]);                                                                     \
-		if (!res.has_value())                                                                                          \
-			return std::unexpected(res.error());                                                                       \
+		if (!res.has_value()){                                                                                         \
+			cJSON_Delete(arrayObject);                                                                                 \
+			return std::unexpected(res.error());}                                                                      \
 		cJSON_bool ok = cJSON_AddItemToArray(arrayObject, res.value());                                                \
-		if (ok == 0)                                                                                                   \
+		if (ok == 0){                                                                                                  \
+			cJSON_Delete(arrayObject);                                                                                 \
 			return std::unexpected(std::format("[refl::ContainerType<"#type">::ToJSON_Item] "                          \
-				"Error while adding an item to the array, idx {}.", i)); }                                             \
+				"Error while adding an item to the array, idx {}.", i));} }                                            \
 	return arrayObject; }                                                                                              \
 static std::expected<void, String> FromJSON_Item(Type& data, cJSON* arrayObject) {                                     \
 	if (!cJSON_IsArray(arrayObject))                                                                                   \
@@ -81,36 +84,24 @@ static std::expected<String, String> ToString(const Type& data) {               
 			output += ", "; }                                                                                          \
 	output += "]";                                                                                                     \
 	return output; }                                                                                                   \
-static std::expected<ReflectedSize_t, String> GetDynamicSize(const Type& data) { return 0ull; }                        \
-static std::expected<ReflectedSize_t, String> GetArraySize(const Type& data) { return Type::ComponentCount; }          \
-static std::expected<void, String> SetArraySize(Type& data, ReflectedSize_t size) {                                    \
-	if (size == Type::ComponentCount)                                                                                  \
+static std::expected<ReflectedSize_t, String> GetDynamicSize(UNUSED const Type& data) { return 0ull; }                 \
+static std::expected<ReflectedSize_t, String> GetArraySize(UNUSED const Type& data) { return Type::ComponentCount; }   \
+static std::expected<void, String> SetArraySize(UNUSED Type& data, ReflectedSize_t size) {                             \
+	if (size == (ReflectedSize_t)Type::ComponentCount)                                                                 \
 		return {};                                                                                                     \
 	return std::unexpected("[refl::ContainerType<"#type">::GetArrayValue] "                                            \
 		"Trying to change the size of an array, different than its initial size."); }                                  \
 static std::expected<const ArrayValueType*, String> GetArrayValue(const Type& data, ReflectedSize_t index){            \
-	if (index < Type::ComponentCount)                                                                                  \
+	if (index < (ReflectedSize_t)Type::ComponentCount)                                                                 \
 		return &data[index];                                                                                           \
 	return std::unexpected(std::format("[refl::ContainerType<"#type">::GetArrayValue] "                                \
 		"Index '{}' out of bounds [0,{}]", index, Type::ComponentCount));}                                             \
 static std::expected<void, String> SetArrayValue(Type& data, const ArrayValueType& value, ReflectedSize_t index){      \
-	if (index < Type::ComponentCount){                                                                                 \
+	if (index < (ReflectedSize_t)Type::ComponentCount){                                                                \
 		data[index] = value;                                                                                           \
 		return {};}                                                                                                    \
 	return std::unexpected(std::format("[refl::ContainerType<"#type">::SetArrayValue] "                                \
 		"Index '{}' out of bounds [0,{}]", index, Type::ComponentCount)); }};}
-
-ReflectAsContainer(greaper::math::Vector2f, greaper::refl::RTI_Vector2f);
-ReflectAsContainer(greaper::math::Vector2d, greaper::refl::RTI_Vector2d);
-ReflectAsContainer(greaper::math::Vector2i, greaper::refl::RTI_Vector2i);
-ReflectAsContainer(greaper::math::Vector2i8, greaper::refl::RTI_Vector2i8);
-ReflectAsContainer(greaper::math::Vector2i16, greaper::refl::RTI_Vector2i16);
-ReflectAsContainer(greaper::math::Vector2i64, greaper::refl::RTI_Vector2i64);
-ReflectAsContainer(greaper::math::Vector2u, greaper::refl::RTI_Vector2u);
-ReflectAsContainer(greaper::math::Vector2u8, greaper::refl::RTI_Vector2u8);
-ReflectAsContainer(greaper::math::Vector2u16, greaper::refl::RTI_Vector2u16);
-ReflectAsContainer(greaper::math::Vector2u64, greaper::refl::RTI_Vector2u64);
-ReflectAsContainer(greaper::math::Vector2b, greaper::refl::RTI_Vector2b);
 
 #else
 #define ReflectAsContainer(...) 

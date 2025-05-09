@@ -68,13 +68,13 @@ namespace greaper::math
 			return reinterpret_cast<const vector_type*>(this);
 		}
 
-		NODISCARD INLINE value_type& operator[](sizet index)noexcept
+		NODISCARD INLINE value_type& operator[](sizet index)
 		{
 			VerifyLess(index, ComponentCount, std::format(                                                             \
 				"Trying to access a Matrix4, but the index {} was out of range.", index));
 			return ((value_type*)(this))[index];
 		}
-		NODISCARD INLINE constexpr const value_type& operator[](sizet index)const noexcept
+		NODISCARD INLINE constexpr const value_type& operator[](sizet index)const
 		{
 			VerifyLess(index, ComponentCount, std::format(                                                             \
 				"Trying to access a Matrix4, but the index {} was out of range.", index));
